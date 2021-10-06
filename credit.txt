@@ -1,3 +1,13 @@
 
+
+// game logic
+https://www.youtube.com/watch?v=JXuxYMGe4KI&ab_channel=TheCodingTrain
+
 // making myOrb follow the mouse
 https://www.youtube.com/watch?v=ttz05d8DSOs&t=28s&ab_channel=TheCodingTrain
+
+// making the camera follow myOrb
+https://stackoverflow.com/questions/16919601/html5-canvas-camera-viewport-how-to-actually-do-it
+
+// gooey effect
+https://www.youtube.com/watch?v=j_BgnpMPxzM&ab_channel=Frankslaboratory

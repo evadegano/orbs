@@ -1,8 +1,17 @@
-canvas {
+body {
   background: #161616;
+}
+
+
+canvas{
+  filter: url("#gooey");
 }
 
 .orbs {
   background: red;
   border-radius: 50%;
+}
+
+#score-board {
+  background: white;
 }

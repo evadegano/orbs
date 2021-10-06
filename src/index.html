@@ -8,7 +8,27 @@
   <title>Orbs</title>
 </head>
 <body>
+  <div id="score-board">
+  </div>
   <canvas id="2D-canvas" width="1600" height="1000"></canvas>
-  <script src="script.js" type="module"></script>
+
+  <svg>
+    <defs>
+      <filter id="gooey">
+        <!-- blur orbs -->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <!-- apply strong contrast -->
+        <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 19 -9" result="gooey" />
+        <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
+      </filter>
+    </defs>
+  </svg>
+
+  <script src="./js/orbs.js"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html>
