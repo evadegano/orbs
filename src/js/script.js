@@ -4,6 +4,9 @@ const canvasCenter = {
   y: canvas.height / 2
 }
 const ctx = canvas.getContext("2d");
+//const camera = new Camera(ctx);
+const scoreBoard = document.querySelectorAll("#score-board p");
+const swallowSound = document.querySelector("#swallow-sound");
 
 var orbs = [];
 var myOrb;
@@ -12,9 +15,9 @@ var myOrb;
 // add orbs to the game and assign them random positions 
 function addOrbs() {
   for (let i = 0; i < 20; i++) {
-    let randR = Math.random() * (40 - 10) + 10;
-    let randX = Math.random() * (canvas.width - randR) + randR;
-    let randY = Math.random() * (canvas.height - randR) + randR;
+    let randR = random(10, 40);
+    let randX = random(randR, canvas.width);
+    let randY = random(randR, canvas.height);
 
     orbs[i] = new Orb(randX, randY, randR);
   }
@@ -29,10 +32,19 @@ function drawOrbs() {
 }
 
 function removeOrbs() {
-  // loop from end of array to make splicing easier
+  // start from end of array to make splicing easier
   for (let i = orbs.length - 1; i >= 0; i--) {
     if (myOrb.doesSwallow(orbs[i])) {
+      swallowSound.play();
+      
       orbs.splice(i, 1);
+
+      // update the scoreboard
+      scoreBoard[0].querySelector("span").textContent = Math.floor(myOrb.radius);
+      scoreBoard[1].querySelector("span").textContent = myOrb.orbsSwallowed;
+      scoreBoard[2].querySelector("span").textContent = Math.floor(myOrb.largestSize);
+      scoreBoard[3].querySelector("span").textContent = myOrb.maxOrbsSwallowed;
+      //ctx.scale(30 / myOrb.radius, 30 / myOrb.radius);
     }
   }
 }
@@ -69,6 +81,13 @@ let animate = function() {
   //moveCamera();
   drawOrbs();
   removeOrbs();
+
+  while (orbs.length < 20) {
+    let randR = random(10, 40);
+    let randX = random(randR, canvas.width);
+    let randY = random(randR, canvas.height);
+    orbs.push(new Orb(randX, randY, randR));
+  }
 }
 
 animate();

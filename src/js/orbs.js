@@ -1,4 +1,8 @@
 
+var smallerOrbImg = document.querySelector("#smaller-orb");
+var largerOrbImg = document.querySelector("#larger-orb");
+var myOrbImg = document.querySelector("#my-orb");
+
 class Orb {
   constructor(x, y, radius) {
     this.pos = {
@@ -7,25 +11,30 @@ class Orb {
     };
     this.radius = radius;
     this.speed = 1.5;
-    this.color = "blue";
+    this.img = smallerOrbImg;
   }
   
   // draw orb on the canvas
   drawOrb() {
     ctx.beginPath();
-    ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = this.color;
+    ctx.arc(this.pos.x, this.pos.y, this.radius + 1.5, 0, 2 * Math.PI);
+    ctx.shadowColor = '#9EEAF9';
+    ctx.shadowBlur = 1.0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillStyle = '#9EEAF9';
     ctx.fill();
     ctx.closePath();
+    ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
   }
 
   // turn orbs to red when they are larger than myOrb
   updateTexture() {
     if (this.radius > myOrb.radius) {
-      this.color = "red";
+      this.img = largerOrbImg;
       this.drawOrb();
     } else {
-      this.color = "blue";
+      this.img = smallerOrbImg;
       this.drawOrb();
     }
   }
@@ -40,7 +49,6 @@ class Orb {
     delta.x = Math.abs(this.pos.x - orb.pos.x);
     delta.y = Math.abs(this.pos.y - orb.pos.y);
 
-    // keep 60% of the total 
     let totalRadius = (this.radius + orb.radius) * 0.6;
 
     // detect if there is a collision and if orb is bigger than the other orb
@@ -64,14 +72,13 @@ class MyOrb extends Orb {
   constructor() {
     super(canvasCenter.x, canvasCenter.y);
     this.radius = 30;
-    this.color = "purple";
+    this.img = myOrbImg;
     this.largestSize = 0;
     this.longestTime = 0;
     this.maxOrbsSwallowed = 0;
-    this.totalOrbsSwallowed = 0;
+    this.orbsSwallowed = 0;
     this.totalGames = 0;
   }
-
   update(mouse) {
     // clear canvas and re-draw the orb
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -97,5 +104,45 @@ class MyOrb extends Orb {
 
     this.pos.x += delta.x * this.speed;
     this.pos.y += delta.y * this.speed ;
+  }
+
+  doesSwallow(orb) {
+    let delta = {
+      x: null,
+      y: null
+    }
+
+    delta.x = Math.abs(this.pos.x - orb.pos.x);
+    delta.y = Math.abs(this.pos.y - orb.pos.y);
+
+    let totalRadius = (this.radius + orb.radius) * 0.6;
+
+    // detect if there is a collision and if orb is bigger than the other orb
+    if (delta.x < totalRadius && delta.y < totalRadius && this.radius > orb.radius) {
+      // update the number of orbs swallowed
+      this.orbsSwallowed++;
+
+      // if new record of orbs eaten, update max orbs eaten
+      if (this.maxOrbsSwallowed < this.orbsSwallowed) {
+        this.maxOrbsSwallowed = this.orbsSwallowed;
+      }
+      
+      // increase orb with the area of orb that was swallowed
+      let thisArea = Math.PI * this.radius ** 2;
+      let orbArea = Math.PI * orb.radius ** 2
+      let newArea = thisArea + orbArea;
+      
+      this.radius = Math.sqrt(newArea / Math.PI);
+
+      // if new record size, update largest size
+      if (this.largestSize < this.radius) {
+        this.largestSize = this.radius;
+      }
+
+      return true;
+    }
+
+    return false;
+    
   }
 }

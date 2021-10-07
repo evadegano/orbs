@@ -9,9 +9,16 @@
 </head>
 <body>
   <div id="score-board">
+    <p>current size: <span>30</span></p>
+    <p>current orbs swallowed: <span>0</span></p>
+    <p>largest size: <span>0</span></p>
+    <p>max orbs swallowed: <span>0</span></p>
   </div>
   <canvas id="2D-canvas" width="1600" height="1000"></canvas>
-
+  <img src="./images/my-orb.png" id="my-orb">
+  <img src="./images/smaller-orb.png" id="smaller-orb">
+  <img src="./images/bigger-orb.png" id="larger-orb">
+  <audio id="swallow-sound" src="./sounds/orb-swallow.wav"></audio>
   <svg>
     <defs>
       <filter id="gooey">
@@ -28,7 +35,9 @@
     </defs>
   </svg>
 
+  <script src="./js/camera.js"></script>
   <script src="./js/orbs.js"></script>
+  <script src="./js/hepers.js"></script>
   <script src="./js/script.js"></script>
 </body>
 </html>

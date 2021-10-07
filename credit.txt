@@ -1,5 +1,4 @@
 
-
 // game logic
 https://www.youtube.com/watch?v=JXuxYMGe4KI&ab_channel=TheCodingTrain
 
@@ -11,3 +10,6 @@ https://stackoverflow.com/questions/16919601/html5-canvas-camera-viewport-how-to
 
 // gooey effect
 https://www.youtube.com/watch?v=j_BgnpMPxzM&ab_channel=Frankslaboratory
+
+// ease in effect
+https://css-tricks.com/easing-animations-in-canvas/
