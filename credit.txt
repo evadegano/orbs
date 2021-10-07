@@ -8,8 +8,15 @@ https://www.youtube.com/watch?v=ttz05d8DSOs&t=28s&ab_channel=TheCodingTrain
 // making the camera follow myOrb
 https://stackoverflow.com/questions/16919601/html5-canvas-camera-viewport-how-to-actually-do-it
 
+// steering behavior
+https://www.youtube.com/watch?v=flxOkx0yLrY&ab_channel=TheCodingTrain
+
 // gooey effect
 https://www.youtube.com/watch?v=j_BgnpMPxzM&ab_channel=Frankslaboratory
 
 // ease in effect
 https://css-tricks.com/easing-animations-in-canvas/
+
+// orb images
+https://www.freepng.fr/png-jiqzid/
+https://www.pngitem.com/middle/hwwoJix_transparent-opal-nebula-magic-crystal-ball-png-png/

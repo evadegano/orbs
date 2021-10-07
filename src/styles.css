@@ -5,6 +5,7 @@ body {
 
 canvas{
   filter: url("#gooey");
+  border: 1px solid yellow;
 }
 
 .orbs {

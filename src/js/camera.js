@@ -104,4 +104,4 @@ class Camera {
   }
 };
 
-export default Camera;
+//export default Camera;

@@ -6,10 +6,16 @@ const canvasCenter = {
 const ctx = canvas.getContext("2d");
 //const camera = new Camera(ctx);
 const scoreBoard = document.querySelectorAll("#score-board p");
+var startClock, stopClock;
+
 const swallowSound = document.querySelector("#swallow-sound");
+const bgdMusic = document.querySelector("#bgd-music");
+bgdMusic.volume = 0.2;
 
 var orbs = [];
-var myOrb;
+var smallOrbs = [];
+var largeOrbs = [];
+var myOrb = new MyOrb();
 
 
 // add orbs to the game and assign them random positions 
@@ -20,6 +26,13 @@ function addOrbs() {
     let randY = random(randR, canvas.height);
 
     orbs[i] = new Orb(randX, randY, randR);
+
+    // assign orbs to the right array
+    if (orbs[i].isLarger(myOrb)) {
+      largeOrbs.push(orbs[i]);
+    } else {
+      smallOrbs.push(orbs[i]);
+    }
   }
 }
 
@@ -31,12 +44,23 @@ function drawOrbs() {
   }
 }
 
+// remove orbs from large orbs array when they become smaller than myOrb
+function updateOrbArrays() {
+  for (let i = largeOrbs.length - 1; i >= 0; i--) {
+    if (!largeOrbs[i].isLarger(myOrb)) {
+      smallOrbs.push(largeOrbs[i]);
+      largeOrbs.splice(i, 1);
+    }
+  }
+}
+
+
 function removeOrbs() {
   // start from end of array to make splicing easier
   for (let i = orbs.length - 1; i >= 0; i--) {
     if (myOrb.doesSwallow(orbs[i])) {
       swallowSound.play();
-      
+
       orbs.splice(i, 1);
 
       // update the scoreboard
@@ -46,18 +70,26 @@ function removeOrbs() {
       scoreBoard[3].querySelector("span").textContent = myOrb.maxOrbsSwallowed;
       //ctx.scale(30 / myOrb.radius, 30 / myOrb.radius);
     }
+
+    if(myOrb.isSwallowed(orbs[i])) {
+      // gameOver()
+      stopClock = Date.now();
+    }
   }
 }
 
+/*
 function moveCamera() {
   ctx.translate(-myOrb.pos.x, -myOrb.pos.y);
 }
+*/
 
 // change later to start click
 window.addEventListener("load", (event) => {
+  startClock = Date.now();
+
   addOrbs();
   
-  myOrb = new MyOrb();
   myOrb.drawOrb();
 })
 
@@ -77,16 +109,20 @@ let animate = function() {
   requestAnimationFrame(animate);
 
   myOrb.update(mouse);
-  //console.log(mouse)
-  //moveCamera();
   drawOrbs();
   removeOrbs();
+  updateOrbArrays()
 
   while (orbs.length < 20) {
     let randR = random(10, 40);
     let randX = random(randR, canvas.width);
     let randY = random(randR, canvas.height);
     orbs.push(new Orb(randX, randY, randR));
+  }
+
+  for (let orb of largeOrbs) {
+    //console.log(smallOrbs[0].pos.x)
+    orb.hunt(smallOrbs);
   }
 }
 
