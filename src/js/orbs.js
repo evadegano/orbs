@@ -3,6 +3,7 @@ var smallerOrbImg = document.querySelector("#smaller-orb");
 var largerOrbImg = document.querySelector("#larger-orb");
 var myOrbImg = document.querySelector("#my-orb");
 
+// idle orbs
 class Orb {
   constructor(x, y, radius) {
     this.pos = {
@@ -10,21 +11,11 @@ class Orb {
       y: y
     };
     this.radius = radius;
-    this.maxspeed = 1.0;
-    this.maxforce = 0.2;
-    this.acceleration = {
-      x: null,
-      y: null
-    };
-    this.velocity = {
-      x: null,
-      y: null
-    };
     this.img = smallerOrbImg;
   }
   
   // draw orb on the canvas
-  drawOrb() {
+  draw() {
     ctx.beginPath();
     ctx.arc(this.pos.x, this.pos.y, this.radius + 1.5, 0, 2 * Math.PI);
     ctx.shadowColor = '#9EEAF9';
@@ -36,20 +27,23 @@ class Orb {
     ctx.closePath();
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
   }
+}
 
-  isLarger(myOrb) {
-    return this.radius > myOrb.radius ? true : false;
-  }
-
-  // turn orbs to red when they are larger than myOrb
-  updateTexture() {
-    if (this.isLarger(myOrb)) {
-      this.img = largerOrbImg;
-      this.drawOrb();
-    } else {
-      this.img = smallerOrbImg;
-      this.drawOrb();
-    }
+// hunter orbs
+class HunterOrb extends Orb {
+  constructor(x, y, radius) {
+    super(x, y, radius);
+    this.maxspeed = 1.0;
+    this.maxforce = 0.2;
+    this.acceleration = {
+      x: null,
+      y: null
+    };
+    this.velocity = {
+      x: null,
+      y: null
+    };
+    this.img = largerOrbImg;
   }
 
   // if collision between two orbs, the largest one swallows the other one
@@ -79,17 +73,14 @@ class Orb {
     return false;
   }
 
-  seek(target, targetIndex) {
-    // clear canvas and re-draw the orb
-    //this.drawOrb()
-
-    // calculate the direction towards the mouse
+  seek(orbsArray, orb, index) {
+    // calculate the direction towards the target
     let delta = {
       x: 0,
       y: 0
     }
-    delta.x = target.pos.x - this.pos.x;
-    delta.y = target.pos.y - this.pos.y;
+    delta.x = orb.pos.x - this.pos.x;
+    delta.y = orb.pos.y - this.pos.y;
 
     // normalize delta
     let magnitude = Math.sqrt(delta.x ** 2 + delta.y ** 2);
@@ -104,12 +95,12 @@ class Orb {
     this.pos.x += delta.x * this.maxspeed;
     this.pos.y += delta.y * this.maxspeed;
 
-    if (this.doesSwallow(target)) {
-      smallOrbs.splice(targetIndex, 1);
+    if (this.doesSwallow(orb)) {
+      orbsArray.splice(index, 1);
     }
   }
 
-  hunt(smallOrbs) {
+  hunt(orbsArray) {
     let minDelta = {
       x: Infinity,
       y: Infinity
@@ -122,23 +113,28 @@ class Orb {
     // index of the closest orb
     let closestOrbIndex = -1;
 
-    for (let i = 0; i < smallOrbs.length; i++) {
-      delta.x = this.pos.x - smallOrbs[i].pos.x;
-      delta.y = this.pos.y - smallOrbs[i].pos.y;
+    for (let i = 0; i < orbsArray.length; i++) {
+      delta.x = Math.abs(this.pos.x - orbsArray[i].pos.x);
+      delta.y = Math.abs(this.pos.y - orbsArray[i].pos.y);
 
-      if (delta.x < minDelta.x && delta.y < minDelta.y) {
+      // normalize delta
+      let magnitudeDelta = Math.sqrt(delta.x ** 2 + delta.y ** 2);
+      delta.x /= magnitudeDelta;
+      delta.y /= magnitudeDelta;
+
+      if (delta.x + delta.y < this.pos.x + this.pos.y) {
         minDelta.x = delta.x;
         minDelta.y = delta.y;
         closestOrbIndex = i;
       }
     }
 
-    this.seek(smallOrbs[closestOrbIndex]);
-
+    this.seek(orbsArray, orbsArray[closestOrbIndex], closestOrbIndex);
   }
 }
 
-class MyOrb extends Orb {
+// my Orb
+class MyOrb extends HunterOrb {
   constructor() {
     super(canvasCenter.x, canvasCenter.y);
     this.radius = 30;
@@ -149,10 +145,10 @@ class MyOrb extends Orb {
     this.orbsSwallowed = 0;
     this.totalGames = 0;
   }
-  update(mouse) {
+
+  seek(mouse) {
     // clear canvas and re-draw the orb
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.drawOrb()
+    this.draw()
 
     // calculate the direction towards the mouse
     let delta = {
@@ -230,7 +226,6 @@ class MyOrb extends Orb {
     if (delta.x < totalRadius && delta.y < totalRadius && this.radius < orb.radius) {
       // clear orb from canvas
       
-
       return true;
     }
 

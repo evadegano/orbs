@@ -9,6 +9,10 @@ https://www.youtube.com/watch?v=ttz05d8DSOs&t=28s&ab_channel=TheCodingTrain
 https://stackoverflow.com/questions/16919601/html5-canvas-camera-viewport-how-to-actually-do-it
 
 // steering behavior
+https://www.youtube.com/watch?v=bKEaK7WNLzM&list=PLRqwX-V7Uu6ZV4yEcW3uDwOgGXKUUsPOM&index=10&t=32s&ab_channel=TheCodingTrain
+https://www.youtube.com/watch?v=Rob0pbE7kks&ab_channel=TheCodingTrain
+https://www.youtube.com/watch?v=T84AWnntxZA&list=PLRqwX-V7Uu6ZV4yEcW3uDwOgGXKUUsPOM&index=15&t=44s&ab_channel=TheCodingTrain
+https://www.youtube.com/watch?v=p1Ws1ZhG36g&ab_channel=TheCodingTrain
 https://www.youtube.com/watch?v=flxOkx0yLrY&ab_channel=TheCodingTrain
 
 // gooey effect
@@ -20,3 +24,6 @@ https://css-tricks.com/easing-animations-in-canvas/
 // orb images
 https://www.freepng.fr/png-jiqzid/
 https://www.pngitem.com/middle/hwwoJix_transparent-opal-nebula-magic-crystal-ball-png-png/
+
+// voice
+https://voicechanger.io/

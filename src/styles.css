@@ -1,11 +1,83 @@
+
+/* global */
 body {
   background: #161616;
   font-family: Arial, Helvetica, sans-serif;
+  color: white;
 }
 
-canvas{
+main {
+  position: relative;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+/* intro page */
+#intro-page {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#onboarding-slideshow {
+  width: 400px;
+  height: 400px;
+  padding: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide {
+  display: none;
+}
+
+.onboarding-text {
+  margin-top: 20px;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 2.0s;
+  animation-name: fade;
+  animation-duration: 2.0s;
+  animation-timing-function: ease-out;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+
+/* game page */
+#game-page {
+  display: none;
+}
+
+#score-board {
+  width: 200px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding: 10px 20px;
+  z-index: 1;
+}
+
+#play-canvas{
   filter: url("#gooey");
-  border: 1px solid yellow;
 }
 
 .orbs {
@@ -13,14 +85,7 @@ canvas{
   border-radius: 50%;
 }
 
-#score-board {
-  width: 200px;
-  color: white;
-  position: sticky;
-  top: 0;
-  left: 0;
-  padding: 10px 20px;
-}
+
 
 #my-orb,
 #smaller-orb,
