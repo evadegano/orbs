@@ -36,12 +36,12 @@ class HunterOrb extends Orb {
     this.maxspeed = 1.0;
     this.maxforce = 0.2;
     this.acceleration = {
-      x: null,
-      y: null
+      x: 0,
+      y: 0
     };
     this.velocity = {
-      x: null,
-      y: null
+      x: 0,
+      y: 0
     };
     this.img = largerOrbImg;
   }
@@ -87,16 +87,12 @@ class HunterOrb extends Orb {
     delta.x /= magnitude;
     delta.y /= magnitude;
 
-    // use if I need my orb to rotate
-    //let angle = Math.atan2(this.delta.y, this.delta.x);
-    //let velX = this.maxspeed * Math.cos(angle);
-    //let velY = this.maxspeed * Math.sin(angle);
-
     this.pos.x += delta.x * this.maxspeed;
     this.pos.y += delta.y * this.maxspeed;
 
     if (this.doesSwallow(orb)) {
       orbsArray.splice(index, 1);
+      return true;
     }
   }
 
@@ -117,19 +113,16 @@ class HunterOrb extends Orb {
       delta.x = Math.abs(this.pos.x - orbsArray[i].pos.x);
       delta.y = Math.abs(this.pos.y - orbsArray[i].pos.y);
 
-      // normalize delta
-      let magnitudeDelta = Math.sqrt(delta.x ** 2 + delta.y ** 2);
-      delta.x /= magnitudeDelta;
-      delta.y /= magnitudeDelta;
-
-      if (delta.x + delta.y < this.pos.x + this.pos.y) {
+      if (minDelta.x + minDelta.y > delta.x + delta.y) {
         minDelta.x = delta.x;
         minDelta.y = delta.y;
         closestOrbIndex = i;
       }
     }
 
-    this.seek(orbsArray, orbsArray[closestOrbIndex], closestOrbIndex);
+    if (this.seek(orbsArray, orbsArray[closestOrbIndex], closestOrbIndex)) {
+      return true
+    };
   }
 }
 
@@ -162,11 +155,6 @@ class MyOrb extends HunterOrb {
     let magnitude = Math.sqrt(delta.x ** 2 + delta.y ** 2);
     delta.x /= magnitude;
     delta.y /= magnitude;
-
-    // use if I need my orb to rotate
-    //let angle = Math.atan2(this.delta.y, this.delta.x);
-    //let velX = this.maxspeed * Math.cos(angle);
-    //let velY = this.maxspeed * Math.sin(angle);
 
     this.pos.x += delta.x * this.maxspeed;
     this.pos.y += delta.y * this.maxspeed ;

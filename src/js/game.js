@@ -1,16 +1,13 @@
-const canvas = document.getElementById("play-canvas");
+const canvas = document.getElementById("game-canvas");
 const canvasCenter = {
   x: canvas.width / 2,
   y: canvas.height / 2
 }
 const ctx = canvas.getContext("2d");
-//const camera = new Camera(ctx);
 const scoreBoard = document.querySelectorAll("#score-board p");
-var startClock, stopClock;
 
 const swallowSound = document.querySelector("#swallow-sound");
-const bgdMusic = document.querySelector("#bgd-music");
-bgdMusic.volume = 0.2;
+swallowSound.volume = 0.25;
 
 let idleOrbs = [];
 let hunterOrbs = [];
@@ -38,7 +35,10 @@ function draw(array) {
 function removeOrbs() {
   for (let i = idleOrbs.length - 1; i >= 0; i--) {
     if (myOrb.doesSwallow(idleOrbs[i])) {
+
+      swallowSound.play();
       idleOrbs.splice(i, 1);
+      generateOrbs(1, 10, 20, Orb, idleOrbs);
 
       // update the scoreboard
       scoreBoard[0].querySelector("span").textContent = Math.floor(myOrb.radius);
@@ -49,32 +49,13 @@ function removeOrbs() {
   }
 }
 
-
 function orbsHunt() {
-  /*
-  for (orb of hunterOrbs) {
-    orb.hunt(idleOrbs);
-  }*/
-
-  hunterOrbs[0].hunt(idleOrbs);
+  for (let orb of hunterOrbs) {
+    if (orb.hunt(idleOrbs)) {
+      generateOrbs(1, 10, 20, Orb, idleOrbs);
+    };
+  }
 }
-
-
-// change later to start click
-window.addEventListener("load", (event) => {
-  startClock = Date.now();
-
-  generateOrbs(17, 10, myOrb.radius, Orb, idleOrbs);
-
-  // generate a random number of hunter orbs
-  let randHunterOrbsAmount = random(3, 6)
-  generateOrbs(randHunterOrbsAmount, myOrb.radius, 45, HunterOrb, hunterOrbs);
-
-  // generate particles
-  //generateOrbs(5, 6, 17, Particle, particleArray);
-  
-  myOrb.draw();
-})
 
 
 // get mouse coordinates
@@ -91,26 +72,24 @@ window.addEventListener("mousemove", (event) => {
 
 // animate game
 let animate = function() {
-
   requestAnimationFrame(animate);
-  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  /* 
+  ctx.save() // sauvegarde la position de mon "curseur"
+  if (canvas.height - myOrb.pos.y < canvasCenter.y) {
+    ctx.translate(0,0) // si mario s'approche du sol => on ne bouge pas la camera
+  } else {
+    ctx.translate(0, - myOrb.pos.y + canvasCenter.y) // la camera suit le y de mario (centré)
+  }
+  ctx.restore()
+  */
 
   myOrb.seek(mouse);
   draw(idleOrbs);
   draw(hunterOrbs);
-
-  /*
-  for (let particle of particleArray) {
-    particle.draw();
-    particle.update();
-  }
-  */
-
-  //draw(particleArray);
   removeOrbs();
   orbsHunt();
+
+  
 }
-
-animate();
-

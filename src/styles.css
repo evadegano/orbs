@@ -10,12 +10,6 @@ main {
   position: relative;
 }
 
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 
 /* intro page */
 #intro-page {
@@ -76,7 +70,25 @@ canvas {
   z-index: 1;
 }
 
-#play-canvas{
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: url("./images/alexander-andrews-fsH1KjbdjE8-unsplash.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#game-canvas{
   filter: url("#gooey");
 }
 
