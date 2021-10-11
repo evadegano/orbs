@@ -3,6 +3,10 @@ var smallerOrbImg = document.querySelector("#smaller-orb");
 var largerOrbImg = document.querySelector("#larger-orb");
 var myOrbImg = document.querySelector("#my-orb");
 
+let canvas = document.getElementById("game-canvas");
+const ctx = canvas.getContext("2d");
+
+
 // idle orbs
 class Orb {
   constructor(x, y, radius) {
@@ -12,20 +16,24 @@ class Orb {
     };
     this.radius = radius;
     this.img = smallerOrbImg;
+    this.isTarget = false;
+    this.glow = "#fffcd3";
   }
   
   // draw orb on the canvas
   draw() {
     ctx.beginPath();
     ctx.arc(this.pos.x, this.pos.y, this.radius + 1.5, 0, 2 * Math.PI);
-    ctx.shadowColor = '#9EEAF9';
+    ctx.shadowColor = this.glow;
     ctx.shadowBlur = 1.0;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
-    ctx.fillStyle = '#9EEAF9';
+    ctx.fillStyle = this.glow;
     ctx.fill();
     ctx.closePath();
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
+
+         
   }
 }
 
@@ -44,10 +52,11 @@ class HunterOrb extends Orb {
       y: 0
     };
     this.img = largerOrbImg;
+    this.glow = '#DE5E89';
   }
 
   // if collision between two orbs, the largest one swallows the other one
-  doesSwallow(orb) {
+  swallow(orb) {
     let delta = {
       x: null,
       y: null
@@ -66,6 +75,7 @@ class HunterOrb extends Orb {
       let newArea = thisArea + orbArea;
       
       this.radius = Math.sqrt(newArea / Math.PI);
+      this.maxspeed -= 0.0001 * this.radius;
 
       return true;
     }
@@ -90,7 +100,7 @@ class HunterOrb extends Orb {
     this.pos.x += delta.x * this.maxspeed;
     this.pos.y += delta.y * this.maxspeed;
 
-    if (this.doesSwallow(orb)) {
+    if (this.swallow(orb)) {
       orbsArray.splice(index, 1);
       return true;
     }
@@ -121,7 +131,7 @@ class HunterOrb extends Orb {
     }
 
     if (this.seek(orbsArray, orbsArray[closestOrbIndex], closestOrbIndex)) {
-      return true
+      return true;
     };
   }
 }
@@ -129,7 +139,7 @@ class HunterOrb extends Orb {
 // my Orb
 class MyOrb extends HunterOrb {
   constructor() {
-    super(canvasCenter.x, canvasCenter.y);
+    super(canvas.width / 2, canvas.height / 2);
     this.radius = 30;
     this.img = myOrbImg;
     this.largestSize = 0;
@@ -137,30 +147,44 @@ class MyOrb extends HunterOrb {
     this.maxOrbsSwallowed = 0;
     this.orbsSwallowed = 0;
     this.totalGames = 0;
+    this.glow = '#9EEAF9';
   }
 
   seek(mouse) {
-    // clear canvas and re-draw the orb
-    this.draw()
-
     // calculate the direction towards the mouse
     let delta = {
       x: 0,
       y: 0
     }
+
     delta.x = mouse.x - this.pos.x;
     delta.y = mouse.y - this.pos.y;
-
+  
     // normalize delta
     let magnitude = Math.sqrt(delta.x ** 2 + delta.y ** 2);
     delta.x /= magnitude;
     delta.y /= magnitude;
 
-    this.pos.x += delta.x * this.maxspeed;
-    this.pos.y += delta.y * this.maxspeed ;
+    // prevent orb from going out of the canvas horizontally
+    if (this.pos.x >= canvas.width - this.radius) {
+      this.pos.x -= this.maxspeed;
+    } else if (this.pos.x - this.radius <= 0) {
+      this.pos.x += this.maxspeed;
+      } else {
+      this.pos.x += delta.x * this.maxspeed;
+    }
+
+    // prevent orb from going out of the canvas vertically
+    if (this.pos.y >= canvas.height - this.radius) {
+      this.pos.y -= this.maxspeed;
+    } else if (this.pos.y - this.radius <= 0) {
+      this.pos.y += this.maxspeed;
+      } else {
+      this.pos.y += delta.y * this.maxspeed;
+    }
   }
 
-  doesSwallow(orb) {
+  swallow(orb) {
     let delta = {
       x: null,
       y: null
@@ -185,7 +209,7 @@ class MyOrb extends HunterOrb {
       let thisArea = Math.PI * this.radius ** 2;
       let orbArea = Math.PI * orb.radius ** 2
       let newArea = thisArea + orbArea;
-      
+
       this.radius = Math.sqrt(newArea / Math.PI);
 
       // if new record size, update largest size
@@ -204,7 +228,6 @@ class MyOrb extends HunterOrb {
       x: null,
       y: null
     }
-
     delta.x = Math.abs(this.pos.x - orb.pos.x);
     delta.y = Math.abs(this.pos.y - orb.pos.y);
 
