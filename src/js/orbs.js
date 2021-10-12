@@ -244,3 +244,11 @@ class MyOrb extends HunterOrb {
     return false;
   }
 }
+
+/*
+
+attraction
+perception radius that grow with their size
+size grows logarithmicly
+
+*/
