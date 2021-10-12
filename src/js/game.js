@@ -1,7 +1,7 @@
-//const canvas = document.getElementById("game-canvas");
-//const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("game-canvas");
+const ctx = canvas.getContext("2d");
 
-let backgroundImg = document.querySelector("#particles-js");
+const backgroundImg = document.querySelector("#particles-js");
 backgroundImg.height = canvas.height;
 
 const viewportMidWidth = window.innerWidth / 2;
@@ -12,6 +12,7 @@ const scoreBoard = document.querySelectorAll("#score-board p");
 const swallowSound = document.querySelector("#swallow-sound");
 swallowSound.volume = 0.25;
 
+// array containing 
 let idleOrbs = [];
 let hunterOrbs = [];
 let myOrb = new MyOrb();
@@ -31,7 +32,7 @@ function generateOrbs(amount, minRadius, maxRadius, className, array) {
   let counter = 0;
 
   // complexity 1
-  while (counter <= amount) {
+  while (counter < amount) {
     // generate a random radius and position
     let randRadius = random(minRadius, maxRadius);
     let randPos = {
@@ -47,7 +48,8 @@ function generateOrbs(amount, minRadius, maxRadius, className, array) {
       let delta = {
         x: Math.abs(randPos.x - array[j].pos.x),
         y: Math.abs(randPos.y - array[j].pos.y),
-        radius: randRadius + array[j].pos.radius + 10
+        // add 10 to leave some space between orbs
+        radius: randRadius + array[j].radius + 10
       }
 
       // if an overlap has been found, generate a new random position
@@ -65,63 +67,48 @@ function generateOrbs(amount, minRadius, maxRadius, className, array) {
   }
 }
 
-
 function draw() {
   /*
-  Draw orbs on the canvas and update their positions
+  Draw orbs on the canvas and update their position
   */
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  myOrbHunts();
-  orbsHunt();
-  
-  // draw idle orbs on canvas
   // complexity: n
-  for (let orb of idleOrbs) {
-    orb.draw();
+  for (let i = idleOrbs.length - 1; i >= 0; i--) {
+    // if myOrb swallows an idle orb, remove it from canvas and add a new one
+    if (myOrb.swallow(idleOrbs[i])) {
+      swallowSound.play();
+      idleOrbs.splice(i, 1);
+      generateOrbs(1, 10, 20, Orb, idleOrbs);
+
+      // update scoreboard width new stats
+      scoreBoard[0].querySelector("span").textContent = Math.floor(myOrb.radius);
+      scoreBoard[1].querySelector("span").textContent = myOrb.orbsSwallowed;
+      scoreBoard[2].querySelector("span").textContent = Math.floor(localStorage.getItem("largestSize"));
+      scoreBoard[3].querySelector("span").textContent = localStorage.getItem("maxOrbsSwallowed");
+    } else {
+      idleOrbs[i].draw();
+    }
   }
 
-  // draw hunter orbs on canvas
+  // draw hunter orbs on canvas and make them hunt
   // complexity: n
   for (let orb of hunterOrbs) {
     orb.draw();
+
+    if (orb.hunt(idleOrbs)) {
+      generateOrbs(1, 10, 20, Orb, idleOrbs);
+    };
+
+
   }
 
   // make myOrb follow the mouse and make the camera follow myOrb
   myOrb.seek(mouse);
   window.scrollTo(-(viewportMidHeight - myOrb.pos.x), -(viewportMidHeight - myOrb.pos.y))
-  myOrb.draw();
 }
 
-function myOrbHunts() {
-  /*
-  Draw orbs on the canvas and update their positions
-  */
-
-  for (let i = idleOrbs.length - 1; i >= 0; i--) {
-    if (myOrb.swallow(idleOrbs[i])) {
-
-      swallowSound.play();
-      idleOrbs.splice(i, 1);
-      generateOrbs(1, 10, 20, Orb, idleOrbs);
-
-      // update the scoreboard
-      scoreBoard[0].querySelector("span").textContent = Math.floor(myOrb.radius);
-      scoreBoard[1].querySelector("span").textContent = myOrb.orbsSwallowed;
-      scoreBoard[2].querySelector("span").textContent = Math.floor(myOrb.largestSize);
-      scoreBoard[3].querySelector("span").textContent = myOrb.maxOrbsSwallowed;
-    }
-  }
-}
-
-function orbsHunt() {
-  for (let orb of hunterOrbs) {
-    if (orb.hunt(idleOrbs)) {
-      generateOrbs(1, 10, 20, Orb, idleOrbs);
-    };
-  }
-}
 
 // get mouse coordinates
 var mouse = {
@@ -134,10 +121,7 @@ window.addEventListener("mousemove", (event) => {
   mouse.y = event.pageY
 })
 
-
 let animate = function() {
   draw();
-  
-
   requestAnimationFrame(animate);
 }

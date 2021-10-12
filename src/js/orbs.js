@@ -1,10 +1,7 @@
 
-var smallerOrbImg = document.querySelector("#smaller-orb");
-var largerOrbImg = document.querySelector("#larger-orb");
-var myOrbImg = document.querySelector("#my-orb");
-
-let canvas = document.getElementById("game-canvas");
-const ctx = canvas.getContext("2d");
+const smallerOrbImg = document.querySelector("#smaller-orb");
+const largerOrbImg = document.querySelector("#larger-orb");
+const myOrbImg = document.querySelector("#my-orb");
 
 
 // idle orbs
@@ -23,7 +20,7 @@ class Orb {
   // draw orb on the canvas
   draw() {
     ctx.beginPath();
-    ctx.arc(this.pos.x, this.pos.y, this.radius + 1.5, 0, 2 * Math.PI);
+    ctx.arc(this.pos.x, this.pos.y, this.radius + 2.5, 0, 2 * Math.PI);
     ctx.shadowColor = this.glow;
     ctx.shadowBlur = 1.0;
     ctx.shadowOffsetX = 0;
@@ -32,8 +29,6 @@ class Orb {
     ctx.fill();
     ctx.closePath();
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
-
-         
   }
 }
 
@@ -70,12 +65,15 @@ class HunterOrb extends Orb {
     // detect if there is a collision and if orb is bigger than the other orb
     if (delta.x < totalRadius && delta.y < totalRadius && this.radius > orb.radius) {
       // increase orb with the area of orb that was swallowed
-      let thisArea = Math.PI * this.radius ** 2;
       let orbArea = Math.PI * orb.radius ** 2
-      let newArea = thisArea + orbArea;
+      let thisArea = Math.PI * this.radius ** 2;
+      thisArea += orbArea;
       
-      this.radius = Math.sqrt(newArea / Math.PI);
-      this.maxspeed -= 0.0001 * this.radius;
+      // get the radius of the new area
+      this.radius = Math.sqrt(thisArea / Math.PI);
+
+      // decrease max speed as orb gets bigger
+      this.maxspeed = 40.0 / this.radius;
 
       return true;
     }
@@ -100,6 +98,7 @@ class HunterOrb extends Orb {
     this.pos.x += delta.x * this.maxspeed;
     this.pos.y += delta.y * this.maxspeed;
 
+    // if chased orb is swallowed, remove it from array
     if (this.swallow(orb)) {
       orbsArray.splice(index, 1);
       return true;
@@ -142,11 +141,7 @@ class MyOrb extends HunterOrb {
     super(canvas.width / 2, canvas.height / 2);
     this.radius = 30;
     this.img = myOrbImg;
-    this.largestSize = 0;
-    this.longestTime = 0;
-    this.maxOrbsSwallowed = 0;
     this.orbsSwallowed = 0;
-    this.totalGames = 0;
     this.glow = '#9EEAF9';
   }
 
@@ -170,7 +165,7 @@ class MyOrb extends HunterOrb {
       this.pos.x -= this.maxspeed;
     } else if (this.pos.x - this.radius <= 0) {
       this.pos.x += this.maxspeed;
-      } else {
+    } else {
       this.pos.x += delta.x * this.maxspeed;
     }
 
@@ -179,9 +174,11 @@ class MyOrb extends HunterOrb {
       this.pos.y -= this.maxspeed;
     } else if (this.pos.y - this.radius <= 0) {
       this.pos.y += this.maxspeed;
-      } else {
+    } else {
       this.pos.y += delta.y * this.maxspeed;
     }
+
+    this.draw();
   }
 
   swallow(orb) {
@@ -200,21 +197,25 @@ class MyOrb extends HunterOrb {
       // update the number of orbs swallowed
       this.orbsSwallowed++;
 
-      // if new record of orbs eaten, update max orbs eaten
-      if (this.maxOrbsSwallowed < this.orbsSwallowed) {
-        this.maxOrbsSwallowed = this.orbsSwallowed;
+      // if new record of orbs eaten, update max orbs eaten in local storage
+      if (localStorage.getItem('maxOrbsSwallowed') < this.orbsSwallowed) {
+        localStorage.setItem('maxOrbsSwallowed', this.orbsSwallowed);
       }
       
       // increase orb with the area of orb that was swallowed
-      let thisArea = Math.PI * this.radius ** 2;
       let orbArea = Math.PI * orb.radius ** 2
-      let newArea = thisArea + orbArea;
+      let thisArea = Math.PI * this.radius ** 2;
+      thisArea += orbArea;
 
-      this.radius = Math.sqrt(newArea / Math.PI);
+      // get the radius of the new area
+      this.radius = Math.sqrt(thisArea / Math.PI);
 
-      // if new record size, update largest size
-      if (this.largestSize < this.radius) {
-        this.largestSize = this.radius;
+      // decrease max speed as orb gets bigger
+      this.maxspeed = 40.0 / this.radius;
+
+      // if new record size, update largest size in local storage
+      if (localStorage.getItem('largestSize') < this.radius) {
+        localStorage.setItem('largestSize', this.radius);
       }
 
       return true;
