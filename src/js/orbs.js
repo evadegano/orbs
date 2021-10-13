@@ -62,12 +62,6 @@ class ActiveOrb extends Orb {
       y: Infinity
     };
 
-    // distance
-    let dist = {
-      x: 0,
-      y: 0
-    }
-
     // index of the closest orb
     let closestOrbIndex = -1;
 
@@ -83,11 +77,13 @@ class ActiveOrb extends Orb {
       }
 
       // calculate the distance to potential target
-      dist.x = Math.abs(this.pos.x - orbsArray[i].pos.x);
-      dist.y = Math.abs(this.pos.y - orbsArray[i].pos.y);
+      let dist = {
+        x: Math.abs(this.pos.x - orbsArray[i].pos.x),
+        y: Math.abs(this.pos.y - orbsArray[i].pos.y)
+      }
 
       // if distance is smaller than the current min distance, update min distance
-      if (minDist.x + minDist.y > dist.x + dist.y) {
+      if (dist.x + dist.y < minDist.x + minDist.y) {
         minDist.x = dist.x;
         minDist.y = dist.y;
 
@@ -103,14 +99,11 @@ class ActiveOrb extends Orb {
 
   // chase target
   chase() {
+    // distance between orb and the target
     let dist = {
-      x: 0,
-      y: 0
+      x: this.target.pos.x - this.pos.x,
+      y: this.target.pos.y - this.pos.y
     }
-
-    // calculate the distance to the target
-    dist.x = this.target.pos.x - this.pos.x;
-    dist.y = this.target.pos.y - this.pos.y;
   
     // normalize distance to the target
     let magnitude = Math.sqrt(dist.x ** 2 + dist.y ** 2);
@@ -124,13 +117,11 @@ class ActiveOrb extends Orb {
 
   // if collision between two orbs, the largest one swallows the other one
   swallow(orb) {
+    // distance between orb and other orb
     let dist = {
-      x: null,
-      y: null
+      x: Math.abs(this.pos.x - orb.pos.x),
+      y: Math.abs(this.pos.y - orb.pos.y)
     }
-
-    dist.x = Math.abs(this.pos.x - orb.pos.x);
-    dist.y = Math.abs(this.pos.y - orb.pos.y);
 
     let totalRadius = (this.radius + orb.radius) * 0.6;
 
@@ -157,7 +148,7 @@ class ActiveOrb extends Orb {
 // player Orb
 class PlayerOrb extends ActiveOrb {
   constructor(mouse) {
-    super(canvas.width / 2, canvas.height / 2);
+    super(0, 0);
     this.radius = 30;
     this.img = myOrbImg;
     this.orbsSwallowed = 0;
@@ -169,14 +160,12 @@ class PlayerOrb extends ActiveOrb {
 
   // chase target
   chase() {
+    // distance between player orb and the target
     let dist = {
-      x: 0,
-      y: 0
+      x: this.target.pos.x - canvas.width / 2,
+      y: this.target.pos.y - canvas.height / 2
     }
 
-    dist.x = this.target.pos.x - canvas.width / 2;
-    dist.y = this.target.pos.y - canvas.height / 2;
-  
     // normalize distance to the target
     let magnitude = Math.sqrt(dist.x ** 2 + dist.y ** 2);
     dist.x /= magnitude;
@@ -187,17 +176,15 @@ class PlayerOrb extends ActiveOrb {
   }
 
   swallow(orb) {
+    // distance between player orb and other orb
     let dist = {
-      x: null,
-      y: null
+      x: Math.abs(this.pos.x - orb.pos.x),
+      y: Math.abs(this.pos.y - orb.pos.y)
     }
-
-    dist.x = Math.abs(this.pos.x - orb.pos.x);
-    dist.y = Math.abs(this.pos.y - orb.pos.y);
 
     let totalRadius = (this.radius + orb.radius) * 0.6;
 
-    // detect if there is a collision and if orb is bigger than the other orb
+    // check if there is a collision and if orb is bigger than the other orb
     if (dist.x < totalRadius && dist.y < totalRadius && this.radius > orb.radius) {
       // update the number of orbs swallowed
       this.orbsSwallowed++;
@@ -207,15 +194,15 @@ class PlayerOrb extends ActiveOrb {
         localStorage.setItem('maxOrbsSwallowed', this.orbsSwallowed);
       }
       
-      // increase orb with the area of orb that was swallowed
+      // increase player orb with the area of orb that was swallowed
       let orbArea = Math.PI * orb.radius ** 2
       let thisArea = Math.PI * this.radius ** 2;
       thisArea += orbArea;
 
-      // get the radius of the new area
+      // update radius with the radius of the new area
       this.radius = Math.sqrt(thisArea / Math.PI);
 
-      // decrease max speed as orb gets bigger
+      // decrease speed as orb gets bigger
       this.maxspeed = 40.0 / this.radius;
 
       // if new record size, update largest size in local storage

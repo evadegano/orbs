@@ -1,8 +1,6 @@
 const canvas = document.getElementById("game-canvas");
-//canvas.width = window.innerWidth;
-//canvas.height = window.innerHeight;
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 const ctx = canvas.getContext("2d");
 
@@ -23,14 +21,24 @@ var mouse = {
   
 }
 
-
-// array containing 
+// initialize the array containing all the orbs
 let orbs = [];
+
+// add player orb to the game
 let playerOrb = new PlayerOrb(mouse);
 orbs.push(playerOrb);
 
 
 function doesOverlap(x, y, radius) {
+  /*
+  Search if there is an overlap between a given position
+  and orbs already present on the canvas
+  ---
+  - x: float, x position on the canvas
+  - y: float, y position on the canvas
+  - radius: float, orb radius
+  */
+
   // loop through array to search for an overlap
   for (let orb of orbs) {
     let delta = {
@@ -64,8 +72,8 @@ function generateOrbs(amount, minRadius, maxRadius, className) {
     // generate a new random position and make sure there is no overlap
     do {
       var randRad = random(minRadius, maxRadius);
-      var randX = random(randRad, canvas.width - randRad);
-      var randY = random(randRad, canvas.height - randRad);
+      var randX = random(-canvas.width, canvas.width);
+      var randY = random(-canvas.height, canvas.height);
     } while (doesOverlap(randX, randY, randRad));
 
     // add new orb to the game
@@ -81,12 +89,60 @@ function draw() {
   ctx.save() // sauvegarde la position de mon "curseur"
 
   // make the camera follow the player
-  ctx.translate(canvas.width / 2 - playerOrb.pos.x, canvas.height / 2 - playerOrb.pos.y);
+  //ctx.translate(canvas.width / 2 - playerOrb.pos.x, canvas.height / 2 - playerOrb.pos.y);
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.scale(30 / playerOrb.radius, 30 / playerOrb.radius);
+  ctx.translate(-playerOrb.pos.x, -playerOrb.pos.y);
 
   for (let orb of orbs) {
     // update player orb's position
     if (orb.type === "player") {
       playerOrb.chase();
+
+      // loop inside a loop -> not optimal: use hash table instead
+      // check if player orb swallows another orb
+      for (let orb of orbs) {
+        if (orb.type === "player") {
+          continue;
+        }
+
+        if (playerOrb.swallow(orb)) {
+          // if the orb is inactive
+          if (orb.type === "inactive") {
+            do {
+              var randRad = random(10, 20);
+              var randX = random(-canvas.width, canvas.width);
+              var randY = random(-canvas.height, canvas.height);
+            } while (doesOverlap(randX, randY, randRad));
+    
+            // remove swallowed orb and reset it
+            orb.radius = randRad;
+            orb.pos = {
+              x: randX,
+              y: randY
+            }
+            orb.isTarget = false;
+          } else {
+            do {
+              var randRad = random(playerOrb.radius, playerOrb.radius + 10);
+              var randX = random(-canvas.width, canvas.width);
+              var randY = random(-canvas.height, canvas.height);
+            } while (doesOverlap(randX, randY, randRad));
+    
+            // remove swallowed orb and reset it
+            orb.radius = randRad;
+            orb.pos = {
+              x: randX,
+              y: randY
+            }
+
+            // reset targets
+            orb.target.isTarget = false;
+            orb.target = null;
+          }
+        }
+      }
+
     }
 
     // update active orbs positions
@@ -126,6 +182,13 @@ function draw() {
 }
 
 
+// animate game
+let animate = function() {
+  draw();
+  requestAnimationFrame(animate);
+}
+
+
 //
 function gameOver() {
   return undefined;
@@ -145,10 +208,3 @@ window.addEventListener('resize', (reportWindowSize) => {
   canvas.height = window.innerHeight;
   backgroundImg.width = canvas.width;
 });
-
-
-// animate game
-let animate = function() {
-  draw();
-  requestAnimationFrame(animate);
-}
