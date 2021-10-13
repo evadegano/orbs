@@ -128,6 +128,19 @@ function draw() {
     if (orb.type === "active") {
       orb.chase();
 
+      if (orb.target.type === "player") {
+        let dist = {
+          x: Math.abs(orb.target.pos.x - orb.pos.x),
+          y: Math.abs(orb.target.pos.y - orb.pos.y)
+        }
+        // if player orb is out of the vision area, reset active orb's target
+        if (dist.x > orb.visionArea || dist.y > orb.visionArea) {
+          orb.target.isTarget = false,
+          orb.target = null,
+          orb.hunt(orbs.filter(orb => orb.type != "player"));
+        }
+      }
+
       // check if orb swallows target
       if (orb.swallow(orb.target)) {
         // if the orb swallowed player orb, the game is over
@@ -182,7 +195,8 @@ function gameOver() {
   if (stopClock > localStorage.getItem('longestTime')) {
     localStorage.setItem('longestTime', stopClock);
   }
-  console.log("game over")
+
+  // stop animations
   cancelAnimationFrame(animationId);
 }
 

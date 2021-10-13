@@ -32,6 +32,7 @@ class Orb {
   }
 }
 
+
 // active orbs
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
@@ -96,6 +97,7 @@ class ActiveOrb extends Orb {
     this.target = orbs[closestOrbIndex];
   }
 
+
   // chase target
   chase() {
     // distance between orb and the target
@@ -108,6 +110,11 @@ class ActiveOrb extends Orb {
     let magnitude = Math.sqrt(dist.x ** 2 + dist.y ** 2);
     dist.x /= magnitude;
     dist.y /= magnitude;
+
+    // if target is player orb and is larger than active orb, run in the other direction
+    if (this.target.type === "player" && this.target.radius > this.radius) {
+      this.maxspeed *= -1;
+    }
 
     // move toward the target
     this.pos.x += dist.x * this.maxspeed;
@@ -144,11 +151,12 @@ class ActiveOrb extends Orb {
   }
 }
 
+
 // player Orb
 class PlayerOrb extends ActiveOrb {
   constructor(mouse) {
     super(0, 0);
-    this.radius = 30;
+    this.radius = 60;
     this.img = myOrbImg;
     this.orbsSwallowed = 0;
     this.glow = '#9EEAF9';
