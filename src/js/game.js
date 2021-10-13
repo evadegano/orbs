@@ -1,11 +1,11 @@
 const canvas = document.getElementById("game-canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 const ctx = canvas.getContext("2d");
 
 const backgroundImg = document.querySelector("#particles-js");
-backgroundImg.height = canvas.height;
-
-const viewportMidWidth = window.innerWidth / 2;
-const viewportMidHeight = window.innerHeight / 2;
+backgroundImg.width = canvas.width;
 
 const scoreBoard = document.querySelectorAll("#score-board p");
 
@@ -104,23 +104,35 @@ function draw() {
 
   }
 
-  // make myOrb follow the mouse and make the camera follow myOrb
   myOrb.seek(mouse);
-  window.scrollTo(-(viewportMidHeight - myOrb.pos.x), -(viewportMidHeight - myOrb.pos.y))
+  myOrb.draw()
 }
 
+//
+function gameOver() {
+  return undefined;
+}
 
-// get mouse coordinates
+// initialize mouse coordinates
 var mouse = {
   x: 0,
   y: 0
 }
 
+// update mouse coordinates on every move
 window.addEventListener("mousemove", (event) => {
   mouse.x = event.pageX,
   mouse.y = event.pageY
 })
 
+// resize canvas and background image with viewport
+window.addEventListener('resize', (reportWindowSize) => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  backgroundImg.width = canvas.width;
+});
+
+// animate game
 let animate = function() {
   draw();
   requestAnimationFrame(animate);

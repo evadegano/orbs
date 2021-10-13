@@ -177,8 +177,6 @@ class MyOrb extends HunterOrb {
     } else {
       this.pos.y += delta.y * this.maxspeed;
     }
-
-    this.draw();
   }
 
   swallow(orb) {
