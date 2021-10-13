@@ -184,27 +184,6 @@ class PlayerOrb extends ActiveOrb {
 
     this.pos.x += dist.x * this.maxspeed;
     this.pos.y += dist.y * this.maxspeed;
-
-    /*
-    // prevent orb from going out of the canvas horizontally
-    if (this.pos.x >= canvas.width - this.radius) {
-      this.pos.x -= this.maxspeed;
-    } else if (this.pos.x - this.radius <= 0) {
-      this.pos.x += this.maxspeed;
-    } else {
-      // move toward the target
-      this.pos.x += dist.x * this.maxspeed;
-    }
-
-    // prevent orb from going out of the canvas vertically
-    if (this.pos.y >= canvas.height - this.radius) {
-      this.pos.y -= this.maxspeed;
-    } else if (this.pos.y - this.radius <= 0) {
-      this.pos.y += this.maxspeed;
-    } else {
-      // move toward the target
-      this.pos.y += dist.y * this.maxspeed;
-    }*/
   }
 
   swallow(orb) {
