@@ -51,6 +51,7 @@ class ActiveOrb extends Orb {
     this.glow = '#DE5E89';
     this.type = "active"
     this.target = null;
+    this.visionArea = this.radius * 3;
   }
 
   // search for nearest target
@@ -116,25 +117,9 @@ class ActiveOrb extends Orb {
     dist.x /= magnitude;
     dist.y /= magnitude;
 
-    // prevent orb from going out of the canvas horizontally
-    if (this.pos.x >= canvas.width - this.radius) {
-      this.pos.x -= this.maxspeed;
-    } else if (this.pos.x - this.radius <= 0) {
-      this.pos.x += this.maxspeed;
-    } else {
-      // move toward the target
-      this.pos.x += dist.x * this.maxspeed;
-    }
-
-    // prevent orb from going out of the canvas vertically
-    if (this.pos.y >= canvas.height - this.radius) {
-      this.pos.y -= this.maxspeed;
-    } else if (this.pos.y - this.radius <= 0) {
-      this.pos.y += this.maxspeed;
-    } else {
-      // move toward the target
-      this.pos.y += dist.y * this.maxspeed;
-    }
+    // move toward the target
+    this.pos.x += dist.x * this.maxspeed;
+    this.pos.y += dist.y * this.maxspeed;
   }
 
   // if collision between two orbs, the largest one swallows the other one
@@ -179,6 +164,47 @@ class PlayerOrb extends ActiveOrb {
     this.glow = '#9EEAF9';
     this.type = "player";
     this.target = mouse;
+    this.visionArea = canvas.width + canvas.height;
+  }
+
+  // chase target
+  chase() {
+    let dist = {
+      x: 0,
+      y: 0
+    }
+
+    dist.x = this.target.pos.x - canvas.width / 2;
+    dist.y = this.target.pos.y - canvas.height / 2;
+  
+    // normalize distance to the target
+    let magnitude = Math.sqrt(dist.x ** 2 + dist.y ** 2);
+    dist.x /= magnitude;
+    dist.y /= magnitude;
+
+    this.pos.x += dist.x * this.maxspeed;
+    this.pos.y += dist.y * this.maxspeed;
+
+    /*
+    // prevent orb from going out of the canvas horizontally
+    if (this.pos.x >= canvas.width - this.radius) {
+      this.pos.x -= this.maxspeed;
+    } else if (this.pos.x - this.radius <= 0) {
+      this.pos.x += this.maxspeed;
+    } else {
+      // move toward the target
+      this.pos.x += dist.x * this.maxspeed;
+    }
+
+    // prevent orb from going out of the canvas vertically
+    if (this.pos.y >= canvas.height - this.radius) {
+      this.pos.y -= this.maxspeed;
+    } else if (this.pos.y - this.radius <= 0) {
+      this.pos.y += this.maxspeed;
+    } else {
+      // move toward the target
+      this.pos.y += dist.y * this.maxspeed;
+    }*/
   }
 
   swallow(orb) {

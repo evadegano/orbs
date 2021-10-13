@@ -1,6 +1,8 @@
 const canvas = document.getElementById("game-canvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+//canvas.width = window.innerWidth;
+//canvas.height = window.innerHeight;
+canvas.width = 500;
+canvas.height = 500;
 
 const ctx = canvas.getContext("2d");
 
@@ -21,10 +23,31 @@ var mouse = {
   
 }
 
+
 // array containing 
 let orbs = [];
 let playerOrb = new PlayerOrb(mouse);
 orbs.push(playerOrb);
+
+
+function doesOverlap(x, y, radius) {
+  // loop through array to search for an overlap
+  for (let orb of orbs) {
+    let delta = {
+      x: Math.abs(x - orb.pos.x),
+      y: Math.abs(y - orb.pos.y),
+      // add 10px to leave some space between orbs
+      radius: radius + orb.radius + 10
+    }
+
+    // if an overlap has been found, generate a new random position
+    if (delta.x < delta.radius && delta.y < delta.radius) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 
 function generateOrbs(amount, minRadius, maxRadius, className) {
@@ -37,47 +60,28 @@ function generateOrbs(amount, minRadius, maxRadius, className) {
   - className: class, class of the orb created
   */
 
-  let counter = 0;
+  for (let i = 0; i < amount; i++) {
+    // generate a new random position and make sure there is no overlap
+    do {
+      var randRad = random(minRadius, maxRadius);
+      var randX = random(randRad, canvas.width - randRad);
+      var randY = random(randRad, canvas.height - randRad);
+    } while (doesOverlap(randX, randY, randRad));
 
-  // complexity 1
-  while (counter < amount) {
-    // generate a random radius and position
-    let randRadius = random(minRadius, maxRadius);
-    let randPos = {
-      x: random(randRadius, canvas.width - randRadius),
-      y: random(randRadius, canvas.height - randRadius)
-    }
-
-    // set overlapping to false by default
-    let overlapping = false;
-    
-    // loop through array to search for overlap
-    for (let j = 0; j < orbs.length; j++) {
-      let delta = {
-        x: Math.abs(randPos.x - orbs[j].pos.x),
-        y: Math.abs(randPos.y - orbs[j].pos.y),
-        // add 10 to leave some space between orbs
-        radius: randRadius + orbs[j].radius + 10
-      }
-
-      // if an overlap has been found, generate a new random position
-      if (delta.x < delta.radius && delta.y < delta.radius) {
-        overlapping = true;
-        break;
-      }
-    }
-
-    // if no overlap, generate a new orb at the random position
-    if (!overlapping) {
-      orbs.push(new className(randPos.x, randPos.y, randRadius));
-      counter++;
-    }
+    // add new orb to the game
+    orbs.push(new className(randX, randY, randRad));
   }
 }
+
 
 function draw() {
   // reset canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.save() // sauvegarde la position de mon "curseur"
+
+  // make the camera follow the player
+  ctx.translate(canvas.width / 2 - playerOrb.pos.x, canvas.height / 2 - playerOrb.pos.y);
 
   for (let orb of orbs) {
     // update player orb's position
@@ -91,11 +95,18 @@ function draw() {
 
       // check if orb swallows target
       if (orb.swallow(orb.target)) {
+        // generate a new random position and make sure there is no overlap
+        do {
+          var randRad = random(10, 20);
+          var randX = random(orb.target.radius, canvas.width - orb.target.radius);
+          var randY = random(orb.target.radius, canvas.height - orb.target.radius);
+        } while (doesOverlap(randX, randY, randRad));
+
         // remove swallowed orb and reset it
-        orb.target.radius = random(10, 20);
+        orb.target.radius = randRad;
         orb.target.pos = {
-          x: random(orb.target.radius, canvas.width - orb.target.radius),
-          y: random(orb.target.radius, canvas.height - orb.target.radius)
+          x: randX,
+          y: randY
         }
         orb.target.isTarget = false;
 
@@ -110,12 +121,16 @@ function draw() {
     // draw orb on canvas
     orb.draw();
   }
+
+  ctx.restore(); // sauvegarde la position de mon "curseur"
 }
+
 
 //
 function gameOver() {
   return undefined;
 }
+
 
 // update mouse coordinates on every move
 window.addEventListener("mousemove", (event) => {
@@ -123,12 +138,14 @@ window.addEventListener("mousemove", (event) => {
   mouse.pos.y = event.pageY
 })
 
+
 // resize canvas and background image with viewport
 window.addEventListener('resize', (reportWindowSize) => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   backgroundImg.width = canvas.width;
 });
+
 
 // animate game
 let animate = function() {
