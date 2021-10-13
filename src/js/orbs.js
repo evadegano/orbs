@@ -1,4 +1,3 @@
-
 const smallerOrbImg = document.querySelector("#smaller-orb");
 const largerOrbImg = document.querySelector("#larger-orb");
 const myOrbImg = document.querySelector("#my-orb");

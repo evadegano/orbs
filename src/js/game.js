@@ -1,16 +1,7 @@
 const canvas = document.getElementById("game-canvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
 const ctx = canvas.getContext("2d");
 
-const backgroundImg = document.querySelector("#particles-js");
-backgroundImg.width = canvas.width;
-
-const scoreBoard = document.querySelectorAll("#score-board p");
-
-const swallowSound = document.querySelector("#swallow-sound");
-swallowSound.volume = 0.25;
+let animationId;
 
 // initialize mouse coordinates
 var mouse = {
@@ -29,16 +20,8 @@ let playerOrb = new PlayerOrb(mouse);
 orbs.push(playerOrb);
 
 
+// Search if there is an overlap between a given position and orbs on the canvas
 function doesOverlap(x, y, radius) {
-  /*
-  Search if there is an overlap between a given position
-  and orbs already present on the canvas
-  ---
-  - x: float, x position on the canvas
-  - y: float, y position on the canvas
-  - radius: float, orb radius
-  */
-
   // loop through array to search for an overlap
   for (let orb of orbs) {
     let delta = {
@@ -58,16 +41,8 @@ function doesOverlap(x, y, radius) {
 }
 
 
+// Add orbs to the game of random size and position
 function generateOrbs(amount, minRadius, maxRadius, className) {
-  /*
-  Add orbs to the game of random size and position
-  ---
-  - amount: int, number of orbs that must be created
-  - minRadius: float, lower bound of the random radius
-  - maxRadius: float, upper bound of the random radius
-  - className: class, class of the orb created
-  */
-
   for (let i = 0; i < amount; i++) {
     // generate a new random position and make sure there is no overlap
     do {
@@ -82,6 +57,7 @@ function generateOrbs(amount, minRadius, maxRadius, className) {
 }
 
 
+// change orbs positions and draw them on the canvas
 function draw() {
   // reset canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -140,6 +116,9 @@ function draw() {
             orb.target.isTarget = false;
             orb.target = null;
           }
+
+          // update scoreboard with new stats
+          updateScoreBoard();
         }
       }
 
@@ -151,26 +130,31 @@ function draw() {
 
       // check if orb swallows target
       if (orb.swallow(orb.target)) {
-        // generate a new random position and make sure there is no overlap
-        do {
-          var randRad = random(10, 20);
-          var randX = random(orb.target.radius, canvas.width - orb.target.radius);
-          var randY = random(orb.target.radius, canvas.height - orb.target.radius);
-        } while (doesOverlap(randX, randY, randRad));
+        // if the orb swallowed player orb, the game is over
+        if (orb.target.type === "player") {
+          gameOver();
+        } else {
+          // generate a new random position and make sure there is no overlap
+          do {
+            var randRad = random(10, 20);
+            var randX = random(orb.target.radius, canvas.width - orb.target.radius);
+            var randY = random(orb.target.radius, canvas.height - orb.target.radius);
+          } while (doesOverlap(randX, randY, randRad));
 
-        // remove swallowed orb and reset it
-        orb.target.radius = randRad;
-        orb.target.pos = {
-          x: randX,
-          y: randY
+          // remove swallowed orb and reset it
+          orb.target.radius = randRad;
+          orb.target.pos = {
+            x: randX,
+            y: randY
+          }
+          orb.target.isTarget = false;
+
+          // reset orb's target
+          orb.target = null;
+
+          // search for a new target
+          orb.hunt(orbs);
         }
-        orb.target.isTarget = false;
-
-        // reset orb's target
-        orb.target = null;
-
-        // search for a new target
-        orb.hunt(orbs);
       }
     }
 
@@ -183,15 +167,23 @@ function draw() {
 
 
 // animate game
-let animate = function() {
+function animate() {
   draw();
-  requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(animate);
 }
 
 
-//
+// stop game
 function gameOver() {
-  return undefined;
+  // get for how long the game ran
+  let stopClock = Date.now() - startClock;
+
+  // if new time record was reached, update local storage
+  if (stopClock > localStorage.getItem('longestTime')) {
+    localStorage.setItem('longestTime', stopClock);
+  }
+  console.log("game over")
+  cancelAnimationFrame(animationId);
 }
 
 

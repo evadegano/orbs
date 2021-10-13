@@ -1,14 +1,19 @@
-let slideIndex = 0;
-let startButton = document.querySelector("#start-btn");
-let startClock, stopClock;
+// site's elements
+const startButton = document.querySelector("#start-btn");
+const scoreBoard = document.querySelectorAll("#score-board p");
+const introPage = document.querySelector("#intro-page");
+const gamePage = document.querySelector("#game-page");
 const bgdMusic = document.querySelector("#bgd-music");
-bgdMusic.volume = 0.2;
+const swallowSound = document.querySelector("#swallow-sound");
+const backgroundImg = document.querySelector("#bgd-img");
+
+let slideIndex = 0;
+let startClock;
 
 
-showSlides();
-
+// display slides
 function showSlides() {
-  let slides = document.querySelectorAll(".slide");
+  const slides = document.querySelectorAll(".slide");
   
   for (let i = 0; i < slides.length; i++) {
     slides[i].style.display = "none";  
@@ -21,6 +26,8 @@ function showSlides() {
   setTimeout(showSlides, 3000); // Change image every 2 seconds
 }
 
+
+// create a local storage to cache player infos
 function createStorage() {
   // if there is no local storage, create a new one
   if (localStorage.length === 0) {
@@ -31,6 +38,8 @@ function createStorage() {
   }
 }
 
+
+// update scoreboard with new stats
 function updateScoreBoard() {
   scoreBoard[0].querySelector("span").textContent = Math.floor(playerOrb.radius);
   scoreBoard[1].querySelector("span").textContent = playerOrb.orbsSwallowed;
@@ -38,9 +47,36 @@ function updateScoreBoard() {
   scoreBoard[3].querySelector("span").textContent = localStorage.getItem("maxOrbsSwallowed");
 }
 
+
+// 
+function setAttributes() {
+  // set canvas size
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // set background image size depending on canvas size
+  if (canvas.width > canvas.height) {
+    backgroundImg.width = canvas.width;
+  } else {
+    backgroundImg.height = canvas.height;
+  }
+  
+  // set sound effects volume
+  bgdMusic.volume = 0.2;
+  swallowSound.volume = 0.25;
+}
+
+
+// display welcome page on load
+window.addEventListener("load", event => {
+  showSlides();
+})
+
+
+// launch game when start button is clicked
 startButton.addEventListener("click", (event) => {
-  const introPage = document.querySelector("#intro-page");
-  const gamePage = document.querySelector("#game-page");
+  // set gameplay attributes
+  setAttributes();
 
   // hide welcome page and display game page
   introPage.style.display = "none";
