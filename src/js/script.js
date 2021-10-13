@@ -24,18 +24,25 @@ function showSlides() {
 function createStorage() {
   // if there is no local storage, create a new one
   if (localStorage.length === 0) {
-    localStorage.setItem('largestSize', myOrb.radius);
+    localStorage.setItem('largestSize', playerOrb.radius);
     localStorage.setItem('longestTime', 0);
     localStorage.setItem('maxOrbsSwallowed', 0);
     localStorage.setItem('totalGames', 0);
   }
 }
 
+function updateScoreBoard() {
+  scoreBoard[0].querySelector("span").textContent = Math.floor(playerOrb.radius);
+  scoreBoard[1].querySelector("span").textContent = playerOrb.orbsSwallowed;
+  scoreBoard[2].querySelector("span").textContent = Math.floor(localStorage.getItem("largestSize"));
+  scoreBoard[3].querySelector("span").textContent = localStorage.getItem("maxOrbsSwallowed");
+}
+
 startButton.addEventListener("click", (event) => {
   const introPage = document.querySelector("#intro-page");
   const gamePage = document.querySelector("#game-page");
 
-  // hide welcome page and display game area
+  // hide welcome page and display game page
   introPage.style.display = "none";
   gamePage.style.display = "block";
 
@@ -45,21 +52,25 @@ startButton.addEventListener("click", (event) => {
   // play background music
   bgdMusic.play();
 
-  // add a random amount of idle and hunter orbs to the game
-  let randAmount = random(20, 25);
-  generateOrbs(randAmount, 10, 20, Orb, idleOrbs);
-  randAmount = random(3, 6);
-  generateOrbs(randAmount, myOrb.radius, 45, HunterOrb, hunterOrbs);
-  
-  // launch game
-  animate();
-
   // create a local storage to stock player's info
   createStorage();
 
   // update scoreboard with player's info
-  scoreBoard[2].querySelector("span").textContent = Math.floor(localStorage.getItem("largestSize"));
-  scoreBoard[3].querySelector("span").textContent = localStorage.getItem("maxOrbsSwallowed");
+  updateScoreBoard()
+
+  // add a random amount of inactive and active orbs to the game
+  let randAmount = random(20, 25);
+  generateOrbs(randAmount, 10, 20, Orb);
+  randAmount = random(3, 5);
+  generateOrbs(randAmount, playerOrb.radius, 45, ActiveOrb);
+
+  // make active orbs look for a target
+  for (let i = orbs.length - 1; i >= 0; i--) {
+    if (orbs[i].type === "active") {
+      orbs[i].hunt(orbs)
+    }
+  }
+  
+  // launch game
+  animate();
 })
-
-

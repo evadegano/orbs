@@ -12,13 +12,22 @@ const scoreBoard = document.querySelectorAll("#score-board p");
 const swallowSound = document.querySelector("#swallow-sound");
 swallowSound.volume = 0.25;
 
+// initialize mouse coordinates
+var mouse = {
+  pos: {
+    x: 0,
+    y: 0
+  }
+  
+}
+
 // array containing 
-let idleOrbs = [];
-let hunterOrbs = [];
-let myOrb = new MyOrb();
+let orbs = [];
+let playerOrb = new PlayerOrb(mouse);
+orbs.push(playerOrb);
 
 
-function generateOrbs(amount, minRadius, maxRadius, className, array) {
+function generateOrbs(amount, minRadius, maxRadius, className) {
   /*
   Add orbs to the game of random size and position
   ---
@@ -26,7 +35,6 @@ function generateOrbs(amount, minRadius, maxRadius, className, array) {
   - minRadius: float, lower bound of the random radius
   - maxRadius: float, upper bound of the random radius
   - className: class, class of the orb created
-  - array: object, array to which orbs must be added
   */
 
   let counter = 0;
@@ -44,12 +52,12 @@ function generateOrbs(amount, minRadius, maxRadius, className, array) {
     let overlapping = false;
     
     // loop through array to search for overlap
-    for (let j = 0; j < array.length; j++) {
+    for (let j = 0; j < orbs.length; j++) {
       let delta = {
-        x: Math.abs(randPos.x - array[j].pos.x),
-        y: Math.abs(randPos.y - array[j].pos.y),
+        x: Math.abs(randPos.x - orbs[j].pos.x),
+        y: Math.abs(randPos.y - orbs[j].pos.y),
         // add 10 to leave some space between orbs
-        radius: randRadius + array[j].radius + 10
+        radius: randRadius + orbs[j].radius + 10
       }
 
       // if an overlap has been found, generate a new random position
@@ -61,51 +69,47 @@ function generateOrbs(amount, minRadius, maxRadius, className, array) {
 
     // if no overlap, generate a new orb at the random position
     if (!overlapping) {
-      array.push(new className(randPos.x, randPos.y, randRadius));
+      orbs.push(new className(randPos.x, randPos.y, randRadius));
       counter++;
     }
   }
 }
 
 function draw() {
-  /*
-  Draw orbs on the canvas and update their position
-  */
-
+  // reset canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // complexity: n
-  for (let i = idleOrbs.length - 1; i >= 0; i--) {
-    // if myOrb swallows an idle orb, remove it from canvas and add a new one
-    if (myOrb.swallow(idleOrbs[i])) {
-      swallowSound.play();
-      idleOrbs.splice(i, 1);
-      generateOrbs(1, 10, 20, Orb, idleOrbs);
-
-      // update scoreboard width new stats
-      scoreBoard[0].querySelector("span").textContent = Math.floor(myOrb.radius);
-      scoreBoard[1].querySelector("span").textContent = myOrb.orbsSwallowed;
-      scoreBoard[2].querySelector("span").textContent = Math.floor(localStorage.getItem("largestSize"));
-      scoreBoard[3].querySelector("span").textContent = localStorage.getItem("maxOrbsSwallowed");
-    } else {
-      idleOrbs[i].draw();
+  for (let orb of orbs) {
+    // update player orb's position
+    if (orb.type === "player") {
+      playerOrb.chase();
     }
-  }
 
-  // draw hunter orbs on canvas and make them hunt
-  // complexity: n
-  for (let orb of hunterOrbs) {
+    // update active orbs positions
+    if (orb.type === "active") {
+      orb.chase();
+
+      // check if orb swallows target
+      if (orb.swallow(orb.target)) {
+        // remove swallowed orb and reset it
+        orb.target.radius = random(10, 20);
+        orb.target.pos = {
+          x: random(orb.target.radius, canvas.width - orb.target.radius),
+          y: random(orb.target.radius, canvas.height - orb.target.radius)
+        }
+        orb.target.isTarget = false;
+
+        // reset orb's target
+        orb.target = null;
+
+        // search for a new target
+        orb.hunt(orbs);
+      }
+    }
+
+    // draw orb on canvas
     orb.draw();
-
-    if (orb.hunt(idleOrbs)) {
-      generateOrbs(1, 10, 20, Orb, idleOrbs);
-    };
-
-
   }
-
-  myOrb.seek(mouse);
-  myOrb.draw()
 }
 
 //
@@ -113,16 +117,10 @@ function gameOver() {
   return undefined;
 }
 
-// initialize mouse coordinates
-var mouse = {
-  x: 0,
-  y: 0
-}
-
 // update mouse coordinates on every move
 window.addEventListener("mousemove", (event) => {
-  mouse.x = event.pageX,
-  mouse.y = event.pageY
+  mouse.pos.x = event.pageX,
+  mouse.pos.y = event.pageY
 })
 
 // resize canvas and background image with viewport

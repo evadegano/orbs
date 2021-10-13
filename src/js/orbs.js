@@ -4,7 +4,7 @@ const largerOrbImg = document.querySelector("#larger-orb");
 const myOrbImg = document.querySelector("#my-orb");
 
 
-// idle orbs
+// inactive orbs
 class Orb {
   constructor(x, y, radius) {
     this.pos = {
@@ -15,6 +15,7 @@ class Orb {
     this.img = smallerOrbImg;
     this.isTarget = false;
     this.glow = "#fffcd3";
+    this.type = "inactive";
   }
   
   // draw orb on the canvas
@@ -32,8 +33,8 @@ class Orb {
   }
 }
 
-// hunter orbs
-class HunterOrb extends Orb {
+// active orbs
+class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
     this.maxspeed = 1.0;
@@ -48,22 +49,108 @@ class HunterOrb extends Orb {
     };
     this.img = largerOrbImg;
     this.glow = '#DE5E89';
+    this.type = "active"
+    this.target = null;
+  }
+
+  // search for nearest target
+  hunt(orbsArray) {
+    // distance to the nearest target
+    let minDist = {
+      x: Infinity,
+      y: Infinity
+    };
+
+    // distance
+    let dist = {
+      x: 0,
+      y: 0
+    }
+
+    // index of the closest orb
+    let closestOrbIndex = -1;
+
+    for (let i = 0; i < orbsArray.length; i++) {
+      // make sure active orbs don't target each other
+      if (orbsArray[i].type === "active") {
+        continue;
+      }
+
+      // don't target orbs that are already targeted
+      if (orbsArray[i].isTarget) {
+        continue;
+      }
+
+      // calculate the distance to potential target
+      dist.x = Math.abs(this.pos.x - orbsArray[i].pos.x);
+      dist.y = Math.abs(this.pos.y - orbsArray[i].pos.y);
+
+      // if distance is smaller than the current min distance, update min distance
+      if (minDist.x + minDist.y > dist.x + dist.y) {
+        minDist.x = dist.x;
+        minDist.y = dist.y;
+
+        // store the index of the new closest target
+        closestOrbIndex = i;
+      }
+    }
+
+    // set orb as target
+    orbs[closestOrbIndex].isTarget = true;
+    this.target = orbs[closestOrbIndex];
+  }
+
+  // chase target
+  chase() {
+    let dist = {
+      x: 0,
+      y: 0
+    }
+
+    // calculate the distance to the target
+    dist.x = this.target.pos.x - this.pos.x;
+    dist.y = this.target.pos.y - this.pos.y;
+  
+    // normalize distance to the target
+    let magnitude = Math.sqrt(dist.x ** 2 + dist.y ** 2);
+    dist.x /= magnitude;
+    dist.y /= magnitude;
+
+    // prevent orb from going out of the canvas horizontally
+    if (this.pos.x >= canvas.width - this.radius) {
+      this.pos.x -= this.maxspeed;
+    } else if (this.pos.x - this.radius <= 0) {
+      this.pos.x += this.maxspeed;
+    } else {
+      // move toward the target
+      this.pos.x += dist.x * this.maxspeed;
+    }
+
+    // prevent orb from going out of the canvas vertically
+    if (this.pos.y >= canvas.height - this.radius) {
+      this.pos.y -= this.maxspeed;
+    } else if (this.pos.y - this.radius <= 0) {
+      this.pos.y += this.maxspeed;
+    } else {
+      // move toward the target
+      this.pos.y += dist.y * this.maxspeed;
+    }
   }
 
   // if collision between two orbs, the largest one swallows the other one
   swallow(orb) {
-    let delta = {
+    let dist = {
       x: null,
       y: null
     }
 
-    delta.x = Math.abs(this.pos.x - orb.pos.x);
-    delta.y = Math.abs(this.pos.y - orb.pos.y);
+    dist.x = Math.abs(this.pos.x - orb.pos.x);
+    dist.y = Math.abs(this.pos.y - orb.pos.y);
 
     let totalRadius = (this.radius + orb.radius) * 0.6;
 
     // detect if there is a collision and if orb is bigger than the other orb
-    if (delta.x < totalRadius && delta.y < totalRadius && this.radius > orb.radius) {
+    if (dist.x < totalRadius && dist.y < totalRadius && this.radius > orb.radius) {
       // increase orb with the area of orb that was swallowed
       let orbArea = Math.PI * orb.radius ** 2
       let thisArea = Math.PI * this.radius ** 2;
@@ -80,118 +167,33 @@ class HunterOrb extends Orb {
 
     return false;
   }
-
-  seek(orbsArray, orb, index) {
-    // calculate the direction towards the target
-    let delta = {
-      x: 0,
-      y: 0
-    }
-    delta.x = orb.pos.x - this.pos.x;
-    delta.y = orb.pos.y - this.pos.y;
-
-    // normalize delta
-    let magnitude = Math.sqrt(delta.x ** 2 + delta.y ** 2);
-    delta.x /= magnitude;
-    delta.y /= magnitude;
-
-    this.pos.x += delta.x * this.maxspeed;
-    this.pos.y += delta.y * this.maxspeed;
-
-    // if chased orb is swallowed, remove it from array
-    if (this.swallow(orb)) {
-      orbsArray.splice(index, 1);
-      return true;
-    }
-  }
-
-  hunt(orbsArray) {
-    let minDelta = {
-      x: Infinity,
-      y: Infinity
-    };
-    let delta = {
-      x: null,
-      y: null
-    }
-
-    // index of the closest orb
-    let closestOrbIndex = -1;
-
-    for (let i = 0; i < orbsArray.length; i++) {
-      delta.x = Math.abs(this.pos.x - orbsArray[i].pos.x);
-      delta.y = Math.abs(this.pos.y - orbsArray[i].pos.y);
-
-      if (minDelta.x + minDelta.y > delta.x + delta.y) {
-        minDelta.x = delta.x;
-        minDelta.y = delta.y;
-        closestOrbIndex = i;
-      }
-    }
-
-    if (this.seek(orbsArray, orbsArray[closestOrbIndex], closestOrbIndex)) {
-      return true;
-    };
-  }
 }
 
-// my Orb
-class MyOrb extends HunterOrb {
-  constructor() {
+// player Orb
+class PlayerOrb extends ActiveOrb {
+  constructor(mouse) {
     super(canvas.width / 2, canvas.height / 2);
     this.radius = 30;
     this.img = myOrbImg;
     this.orbsSwallowed = 0;
     this.glow = '#9EEAF9';
-  }
-
-  seek(mouse) {
-    // calculate the direction towards the mouse
-    let delta = {
-      x: 0,
-      y: 0
-    }
-
-    delta.x = mouse.x - this.pos.x;
-    delta.y = mouse.y - this.pos.y;
-  
-    // normalize delta
-    let magnitude = Math.sqrt(delta.x ** 2 + delta.y ** 2);
-    delta.x /= magnitude;
-    delta.y /= magnitude;
-
-    // prevent orb from going out of the canvas horizontally
-    if (this.pos.x >= canvas.width - this.radius) {
-      this.pos.x -= this.maxspeed;
-    } else if (this.pos.x - this.radius <= 0) {
-      this.pos.x += this.maxspeed;
-    } else {
-      this.pos.x += delta.x * this.maxspeed;
-    }
-
-    // prevent orb from going out of the canvas vertically
-    if (this.pos.y >= canvas.height - this.radius) {
-      this.pos.y -= this.maxspeed;
-    } else if (this.pos.y - this.radius <= 0) {
-      this.pos.y += this.maxspeed;
-    } else {
-      this.pos.y += delta.y * this.maxspeed;
-    }
+    this.type = "player";
+    this.target = mouse;
   }
 
   swallow(orb) {
-    let delta = {
+    let dist = {
       x: null,
       y: null
     }
 
-    delta.x = Math.abs(this.pos.x - orb.pos.x);
-    delta.y = Math.abs(this.pos.y - orb.pos.y);
+    dist.x = Math.abs(this.pos.x - orb.pos.x);
+    dist.y = Math.abs(this.pos.y - orb.pos.y);
 
     let totalRadius = (this.radius + orb.radius) * 0.6;
 
     // detect if there is a collision and if orb is bigger than the other orb
-    if (delta.x < totalRadius && delta.y < totalRadius && this.radius > orb.radius) {
+    if (dist.x < totalRadius && dist.y < totalRadius && this.radius > orb.radius) {
       // update the number of orbs swallowed
       this.orbsSwallowed++;
 
@@ -216,26 +218,6 @@ class MyOrb extends HunterOrb {
         localStorage.setItem('largestSize', this.radius);
       }
 
-      return true;
-    }
-
-    return false;
-  }
-
-  isSwallowed(orb) {
-    let delta = {
-      x: null,
-      y: null
-    }
-    delta.x = Math.abs(this.pos.x - orb.pos.x);
-    delta.y = Math.abs(this.pos.y - orb.pos.y);
-
-    let totalRadius = (this.radius + orb.radius) * 0.6;
-
-    // detect if there is a collision and if orb is smaller than the other orb
-    if (delta.x < totalRadius && delta.y < totalRadius && this.radius < orb.radius) {
-      // clear orb from canvas
-      
       return true;
     }
 
