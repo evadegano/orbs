@@ -30,7 +30,7 @@ class Orb {
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
-    this.speed = 1.5;
+    this.speed = 1.0;
     this.img = activeImg;
     this.glow = "blue";
     this.type = "active"
@@ -120,7 +120,7 @@ class ActiveOrb extends Orb {
       // increase orb with the area of orb that was swallowed
       let orbArea = Math.PI * orb.radius ** 2
       let thisArea = Math.PI * this.radius ** 2;
-      thisArea += orbArea;
+      thisArea += orbArea / 10;
       
       // get the radius of the new area
       this.radius = Math.sqrt(thisArea / Math.PI);
@@ -198,7 +198,7 @@ class PlayerOrb extends ActiveOrb {
       // increase player orb with the area of orb that was swallowed
       let orbArea = Math.PI * orb.radius ** 2
       let thisArea = Math.PI * this.radius ** 2;
-      thisArea += orbArea;
+      thisArea += orbArea / 10;
 
       // update radius with the radius of the new area
       this.radius = Math.sqrt(thisArea / Math.PI);

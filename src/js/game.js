@@ -2,7 +2,7 @@ const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 
 let animationId;
-let gameover = false;
+let isGameOver = false;
 
 // initialize mouse coordinates
 var mouse = {
@@ -95,9 +95,9 @@ function draw() {
           if (orb.type === "inactive") {
             // generate a new inactive orb
             do {
-              var randRad = random(playerOrb.radius - 15, playerOrb.radius - 5);
-              var randX = random(-canvas.width, canvas.width);
-              var randY = random(-canvas.height, canvas.height);
+              var randRad = random(15, 20);
+              var randX = random(randRad, canvas.width - randRad);
+              var randY = random(randRad, canvas.height - randRad);
             } while (doesOverlap(randX, randY, randRad));
     
             // remove swallowed orb and reset it
@@ -110,9 +110,9 @@ function draw() {
           } else {
             // generate a new active orb
             do {
-              var randRad = random(playerOrb.radius, playerOrb.radius + 10);
-              var randX = random(-canvas.width, canvas.width);
-              var randY = random(-canvas.height, canvas.height);
+              var randRad = random(playerOrb.radius - 5, playerOrb.radius + 10);
+              var randX = random(randRad, canvas.width - randRad);
+              var randY = random(randRad, canvas.height - randRad);
             } while (doesOverlap(randX, randY, randRad));
     
             // remove swallowed orb and reset it
@@ -160,9 +160,9 @@ function draw() {
         } else {
           // generate a new random position and make sure there is no overlap
           do {
-            var randRad = random(playerOrb.radius - 15, playerOrb.radius - 5);
-            var randX = random(orb.target.radius, canvas.width - orb.target.radius);
-            var randY = random(orb.target.radius, canvas.height - orb.target.radius);
+            var randRad = random(15, 20);
+            var randX = random(randRad, canvas.width - randRad);
+            var randY = random(randRad, canvas.height - randRad);
           } while (doesOverlap(randX, randY, randRad));
 
           // remove swallowed orb and reset it
@@ -193,8 +193,10 @@ function draw() {
 // animate game
 function animate() {
   draw();
-  // if not gameover
-  animationId = requestAnimationFrame(animate);
+  
+  if (!isGameOver) {
+    animationId = requestAnimationFrame(animate);
+  }
 }
 
 
@@ -210,8 +212,7 @@ function gameOver() {
 
   // stop animations
   cancelAnimationFrame(animationId);
-
-  gameover = true;
+  isGameOver = true;
 }
 
 
