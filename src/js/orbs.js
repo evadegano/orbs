@@ -12,12 +12,16 @@ class Orb {
     };
     this.radius = radius;
     this.img = inactiveImg;
+    this.glow = "#F9F2A6"
     this.isTarget = false;
     this.type = "inactive";
   }
   
   // draw orb on the canvas
   draw() {
+    ctx.shadowColor = this.glow;
+    ctx.shadowBlur = 5;
+    ctx.shadowBlur = 10;
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
   }
 }
@@ -27,17 +31,9 @@ class Orb {
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
-    this.maxspeed = 1.0;
-    this.maxforce = 0.2;
-    this.acceleration = {
-      x: 0,
-      y: 0
-    };
-    this.velocity = {
-      x: 0,
-      y: 0
-    };
+    this.speed = 2.0;
     this.img = activeImg;
+    this.glow = "blue";
     this.type = "active"
     this.target = null;
     this.visionArea = this.radius * 3;
@@ -102,12 +98,12 @@ class ActiveOrb extends Orb {
 
     // if target is player orb and is larger than active orb, run in the other direction
     if (this.target.type === "player" && this.target.radius > this.radius) {
-      this.maxspeed *= -1;
+      this.speed *= -1;
     }
 
     // move toward the target
-    this.pos.x += dist.x * this.maxspeed;
-    this.pos.y += dist.y * this.maxspeed;
+    this.pos.x += dist.x * this.speed;
+    this.pos.y += dist.y * this.speed;
   }
 
   // if collision between two orbs, the largest one swallows the other one
@@ -131,7 +127,13 @@ class ActiveOrb extends Orb {
       this.radius = Math.sqrt(thisArea / Math.PI);
 
       // decrease max speed as orb gets bigger
-      this.maxspeed = 40.0 / this.radius;
+      if (this.speed > 1) {
+        this.speed -= 50.0 / (this.radius * 100);
+      } else {
+        this.speed = 1.0;
+      }
+      
+
 
       return true;
     }
@@ -145,12 +147,12 @@ class ActiveOrb extends Orb {
 class PlayerOrb extends ActiveOrb {
   constructor(mouse) {
     super(0, 0);
-    this.radius = 40;
+    this.radius = 30;
     this.img = playerImg;
+    this.glow = "#001E17";
     this.orbsSwallowed = 0;
     this.type = "player";
     this.target = mouse;
-    this.visionArea = canvas.width + canvas.height;
   }
 
   // chase target
@@ -166,8 +168,8 @@ class PlayerOrb extends ActiveOrb {
     dist.x /= magnitude;
     dist.y /= magnitude;
 
-    this.pos.x += dist.x * this.maxspeed;
-    this.pos.y += dist.y * this.maxspeed;
+    this.pos.x += dist.x * this.speed;
+    this.pos.y += dist.y * this.speed;
   }
 
   swallow(orb) {
@@ -198,7 +200,11 @@ class PlayerOrb extends ActiveOrb {
       this.radius = Math.sqrt(thisArea / Math.PI);
 
       // decrease speed as orb gets bigger
-      this.maxspeed = 40.0 / this.radius;
+      if (this.speed > 1) {
+        this.speed -= 50.0 / (this.radius * 100);
+      } else {
+        this.speed = 1.0;
+      }
 
       // if new record size, update largest size in local storage
       if (localStorage.getItem('largestSize') < this.radius) {

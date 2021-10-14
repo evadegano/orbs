@@ -83,10 +83,10 @@ function draw() {
         }
 
         if (playerOrb.swallow(orb)) {
-          // if the orb is inactive
           if (orb.type === "inactive") {
+            // generate a new inactive orb
             do {
-              var randRad = random(10, 20);
+              var randRad = random(playerOrb.radius - 15, playerOrb.radius - 5);
               var randX = random(-canvas.width, canvas.width);
               var randY = random(-canvas.height, canvas.height);
             } while (doesOverlap(randX, randY, randRad));
@@ -99,6 +99,7 @@ function draw() {
             }
             orb.isTarget = false;
           } else {
+            // generate a new active orb
             do {
               var randRad = random(playerOrb.radius, playerOrb.radius + 10);
               var randX = random(-canvas.width, canvas.width);
@@ -115,6 +116,7 @@ function draw() {
             // reset targets
             orb.target.isTarget = false;
             orb.target = null;
+            orb.hunt(orbs);
           }
 
           // update scoreboard with new stats
@@ -149,7 +151,7 @@ function draw() {
         } else {
           // generate a new random position and make sure there is no overlap
           do {
-            var randRad = random(10, 20);
+            var randRad = random(playerOrb.radius - 15, playerOrb.radius - 5);
             var randX = random(orb.target.radius, canvas.width - orb.target.radius);
             var randY = random(orb.target.radius, canvas.height - orb.target.radius);
           } while (doesOverlap(randX, randY, randRad));
