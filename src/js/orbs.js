@@ -136,7 +136,7 @@ class ActiveOrb extends Orb {
 // player Orb
 class PlayerOrb extends ActiveOrb {
   constructor(mouse) {
-    super(0, 0);
+    super(canvas.width / 2, canvas.height / 2);
     this.radius = 30;
     this.img = playerImg;
     this.glow = "#001E17";
@@ -149,8 +149,22 @@ class PlayerOrb extends ActiveOrb {
   chase() {
     // distance between player orb and the target
     let dist = {
-      x: this.target.pos.x - canvas.width / 2,
-      y: this.target.pos.y - canvas.height / 2
+      x: null,
+      y: null
+    }
+
+    if (playerOrb.pos.x < canvas.width / 2 && playerOrb.pos.y < canvas.height / 2) {
+      dist.x = this.target.pos.x - this.pos.x;
+      dist.y = this.target.pos.y - this.pos.y;
+    } else if (playerOrb.pos.x < canvas.width / 2) {
+      dist.x = this.target.pos.x - this.pos.x;
+      dist.y = this.target.pos.y - canvas.height / 2;
+    } else if (playerOrb.pos.y < canvas.height / 2) {
+      dist.x = this.target.pos.x - canvas.width / 2;
+      dist.y = this.target.pos.y - this.pos.y;
+    } else {
+      dist.x = this.target.pos.x - canvas.width / 2;
+      dist.y = this.target.pos.y - canvas.height / 2;
     }
 
     // normalize distance to the target

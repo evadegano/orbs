@@ -2,6 +2,7 @@ const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 
 let animationId;
+let gameover = false;
 
 // initialize mouse coordinates
 var mouse = {
@@ -47,8 +48,8 @@ function generateOrbs(amount, minRadius, maxRadius, className) {
     // generate a new random position and make sure there is no overlap
     do {
       var randRad = random(minRadius, maxRadius);
-      var randX = random(-canvas.width, canvas.width);
-      var randY = random(-canvas.height, canvas.height);
+      var randX = random(randRad, canvas.width - randRad);
+      var randY = random(randRad, canvas.height - randRad);
     } while (doesOverlap(randX, randY, randRad));
 
     // add new orb to the game
@@ -65,10 +66,15 @@ function draw() {
   ctx.save() // sauvegarde la position de mon "curseur"
 
   // make the camera follow the player
-  //ctx.translate(canvas.width / 2 - playerOrb.pos.x, canvas.height / 2 - playerOrb.pos.y);
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.scale(30 / playerOrb.radius, 30 / playerOrb.radius);
-  ctx.translate(-playerOrb.pos.x, -playerOrb.pos.y);
+  if (playerOrb.pos.x < canvas.width / 2 && playerOrb.pos.y < canvas.height / 2) {
+    ctx.translate(0, 0);
+  } else if (playerOrb.pos.x < canvas.width / 2) {
+    ctx.translate(0, canvas.height / 2 - playerOrb.pos.y);
+  } else if (playerOrb.pos.y < canvas.height / 2) {
+    ctx.translate(canvas.width / 2 - playerOrb.pos.x, 0);
+  } else {
+    ctx.translate(canvas.width / 2 - playerOrb.pos.x, canvas.height / 2 - playerOrb.pos.y);
+  }
 
   for (let orb of orbs) {
     // update player orb's position
@@ -85,7 +91,7 @@ function draw() {
         if (playerOrb.swallow(orb)) {
           // play sound effect
           swallowSound.play();
-          
+
           if (orb.type === "inactive") {
             // generate a new inactive orb
             do {
@@ -187,6 +193,7 @@ function draw() {
 // animate game
 function animate() {
   draw();
+  // if not gameover
   animationId = requestAnimationFrame(animate);
 }
 
@@ -203,6 +210,8 @@ function gameOver() {
 
   // stop animations
   cancelAnimationFrame(animationId);
+
+  gameover = true;
 }
 
 

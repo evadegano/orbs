@@ -96,7 +96,7 @@ startButton.addEventListener("click", (event) => {
 
   // add a random amount of inactive and active orbs to the game
   let randAmount = random(15, 20);
-  generateOrbs(randAmount, playerOrb.radius - 10, playerOrb.radius, Orb);
+  generateOrbs(randAmount, 20, 30, Orb);
   randAmount = random(3, 5);
   generateOrbs(randAmount, playerOrb.radius, playerOrb.radius + 10, ActiveOrb);
 
