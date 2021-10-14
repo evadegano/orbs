@@ -83,6 +83,9 @@ function draw() {
         }
 
         if (playerOrb.swallow(orb)) {
+          // play sound effect
+          swallowSound.play();
+          
           if (orb.type === "inactive") {
             // generate a new inactive orb
             do {

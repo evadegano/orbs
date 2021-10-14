@@ -5,9 +5,6 @@ https://www.youtube.com/watch?v=JXuxYMGe4KI&ab_channel=TheCodingTrain
 // making myOrb follow the mouse
 https://www.youtube.com/watch?v=ttz05d8DSOs&t=28s&ab_channel=TheCodingTrain
 
-// making the camera follow myOrb
-https://stackoverflow.com/questions/16919601/html5-canvas-camera-viewport-how-to-actually-do-it
-
 // generate orbs at random positions with no overlap
 https://www.youtube.com/watch?v=XATr_jdh-44&ab_channel=TheCodingTrain
 
@@ -18,20 +15,14 @@ https://www.youtube.com/watch?v=T84AWnntxZA&list=PLRqwX-V7Uu6ZV4yEcW3uDwOgGXKUUs
 https://www.youtube.com/watch?v=p1Ws1ZhG36g&ab_channel=TheCodingTrain
 https://www.youtube.com/watch?v=flxOkx0yLrY&ab_channel=TheCodingTrain
 
-// gooey effect
-https://www.youtube.com/watch?v=j_BgnpMPxzM&ab_channel=Frankslaboratory
-
-// ease in effect
-https://css-tricks.com/easing-animations-in-canvas/
-
 // orb images
 https://www.freepng.fr/png-jiqzid/
 https://www.pngkey.com/detail/u2w7w7r5r5i1w7r5_transparent-orb-glow-yellow-orb-png/
 https://www.pngitem.com/middle/hwwoJix_transparent-opal-nebula-magic-crystal-ball-png-png/
 
-// voice
-https://voicechanger.io/
-
 // background
 Photo by <a href="https://unsplash.com/@alex_andrews?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Alexander Andrews</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-  
+
+// music
+https://www.youtube.com/watch?v=HKinw3NqWFQ
+https://www.youtube.com/watch?v=w_ms_Xe0Jtk

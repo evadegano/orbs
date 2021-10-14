@@ -20,7 +20,6 @@ class Orb {
   // draw orb on the canvas
   draw() {
     ctx.shadowColor = this.glow;
-    ctx.shadowBlur = 5;
     ctx.shadowBlur = 10;
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
   }
@@ -31,7 +30,7 @@ class Orb {
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
-    this.speed = 2.0;
+    this.speed = 1.5;
     this.img = activeImg;
     this.glow = "blue";
     this.type = "active"
@@ -126,15 +125,6 @@ class ActiveOrb extends Orb {
       // get the radius of the new area
       this.radius = Math.sqrt(thisArea / Math.PI);
 
-      // decrease max speed as orb gets bigger
-      if (this.speed > 1) {
-        this.speed -= 50.0 / (this.radius * 100);
-      } else {
-        this.speed = 1.0;
-      }
-      
-
-
       return true;
     }
 
@@ -199,12 +189,6 @@ class PlayerOrb extends ActiveOrb {
       // update radius with the radius of the new area
       this.radius = Math.sqrt(thisArea / Math.PI);
 
-      // decrease speed as orb gets bigger
-      if (this.speed > 1) {
-        this.speed -= 50.0 / (this.radius * 100);
-      } else {
-        this.speed = 1.0;
-      }
 
       // if new record size, update largest size in local storage
       if (localStorage.getItem('largestSize') < this.radius) {

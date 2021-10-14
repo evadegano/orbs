@@ -63,7 +63,7 @@ function setAttributes() {
   
   // set sound effects volume
   bgdMusic.volume = 0.2;
-  swallowSound.volume = 0.25;
+  swallowSound.volume = 0.15;
 }
 
 
@@ -95,7 +95,7 @@ startButton.addEventListener("click", (event) => {
   updateScoreBoard()
 
   // add a random amount of inactive and active orbs to the game
-  let randAmount = random(20, 25);
+  let randAmount = random(15, 20);
   generateOrbs(randAmount, playerOrb.radius - 10, playerOrb.radius, Orb);
   randAmount = random(3, 5);
   generateOrbs(randAmount, playerOrb.radius, playerOrb.radius + 10, ActiveOrb);
