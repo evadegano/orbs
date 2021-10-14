@@ -36,12 +36,28 @@ main {
 }
 
 #start-btn {
+  margin-top: 30px;
   padding: 10px 15px;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 550;
+  font-size: 20px;
+  color: white;
+  background: #161616;
   border-radius: 25px;
-  border: none;
+  border: 1px solid white;
   cursor: pointer;
+  box-sizing: border-box;
+  transition: 0.5s;
+ 
+
+}
+
+#start-btn:hover {
+  color: #161616;
+  background: white;
+  box-shadow: 
+    0 0 10px white,
+    0 0 20px white,
+    0 0 40px white;
 }
 
 @media screen and (max-width: 874px) {
