@@ -47,8 +47,6 @@ main {
   cursor: pointer;
   box-sizing: border-box;
   transition: 0.5s;
- 
-
 }
 
 #start-btn:hover {
@@ -132,10 +130,4 @@ canvas {
 #game-canvas{
   /*filter: url("#gooey");*/
   border: 1px solid red;
-}
-
-#my-orb,
-#smaller-orb,
-#larger-orb {
-  display: none;
 }

@@ -1,6 +1,6 @@
-const smallerOrbImg = document.querySelector("#smaller-orb");
-const largerOrbImg = document.querySelector("#larger-orb");
-const myOrbImg = document.querySelector("#my-orb");
+const inactiveImg = document.querySelector("#yellow-orb");
+const activeImg = document.querySelector("#red-orb");
+const playerImg = document.querySelector("#blue-orb");
 
 
 // inactive orbs
@@ -11,23 +11,13 @@ class Orb {
       y: y
     };
     this.radius = radius;
-    this.img = smallerOrbImg;
+    this.img = inactiveImg;
     this.isTarget = false;
-    this.glow = "#fffcd3";
     this.type = "inactive";
   }
   
   // draw orb on the canvas
   draw() {
-    ctx.beginPath();
-    ctx.arc(this.pos.x, this.pos.y, this.radius + 2.5, 0, 2 * Math.PI);
-    ctx.shadowColor = this.glow;
-    ctx.shadowBlur = 1.0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.fillStyle = this.glow;
-    ctx.fill();
-    ctx.closePath();
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
   }
 }
@@ -47,8 +37,7 @@ class ActiveOrb extends Orb {
       x: 0,
       y: 0
     };
-    this.img = largerOrbImg;
-    this.glow = '#DE5E89';
+    this.img = activeImg;
     this.type = "active"
     this.target = null;
     this.visionArea = this.radius * 3;
@@ -93,8 +82,8 @@ class ActiveOrb extends Orb {
     }
 
     // set orb as target
-    orbs[closestOrbIndex].isTarget = true;
-    this.target = orbs[closestOrbIndex];
+    orbsArray[closestOrbIndex].isTarget = true;
+    this.target = orbsArray[closestOrbIndex];
   }
 
 
@@ -156,10 +145,9 @@ class ActiveOrb extends Orb {
 class PlayerOrb extends ActiveOrb {
   constructor(mouse) {
     super(0, 0);
-    this.radius = 60;
-    this.img = myOrbImg;
+    this.radius = 40;
+    this.img = playerImg;
     this.orbsSwallowed = 0;
-    this.glow = '#9EEAF9';
     this.type = "player";
     this.target = mouse;
     this.visionArea = canvas.width + canvas.height;

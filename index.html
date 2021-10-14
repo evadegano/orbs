@@ -4,30 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./images/my-orb.ico" />
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="icon" href="./src/images/orb.ico" />
+    <link rel="stylesheet" href="./src/styles.css">
     <title>Orbs</title>
   </head>
   <body>
     <main>
       <div id="intro-page">
         <h1>welcome to</h1>
-        <img id="logo" src="./images/logo.png" alt="Orbs logo" width="200">
+        <img id="logo" src="./src/images/logo.png" alt="Orbs logo" width="200">
         
         <!-- onboarding slideshow -->
         <div id="onboarding-slideshow">
           <div class="slide fade">
-            <img src="./images/my-orb.png" style="width:200px">
+            <img id="blue-orb" src="./src/images/blue-orb.png" style="width:200px">
             <p class="onboarding-text">this is you</p>
           </div>
 
           <div class="slide fade">
-            <img src="./images/smaller-orb.png" style="width:200px">
+            <img id="yellow-orb" src="./src/images/yellow-orb.png" style="width:200px">
             <p class="onboarding-text">eat those orbs to become bigger</p>
           </div>
 
           <div class="slide fade">
-            <img src="./images/bigger-orb.png" style="width:200px">
+            <img id="red-orb" src="./src/images/red-orb.png" style="width:200px">
             <p class="onboarding-text">Avoid those orbs when they are bigger than you,
               <br>eat them otherwise</p>
           </div>
@@ -55,42 +55,20 @@
         </div>
 
         <!-- particules background -->
-        <img id="bgd-img" src="./images/alexander-andrews-fsH1KjbdjE8-unsplash.jpg" alt="picture of a nebula">
+        <img id="bgd-img" src="./src/images/background.jpg" alt="picture of a nebula">
 
         <!-- game area -->
         <canvas id="game-canvas"></canvas>
-
-        <!-- filter for a gooey effect -->
-        <svg>
-          <defs>
-            <filter id="gooey">
-              <!-- blur orbs -->
-              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-              <!-- apply strong contrast -->
-              <feColorMatrix in="blur" mode="matrix"
-              values="1 0 0 0 0
-                      0 1 0 0 0
-                      0 0 1 0 0
-                      0 0 0 19 -9" result="gooey" />
-              <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
-            </filter>
-          </defs>
-        </svg>
       </div>
       
       <!-- game sounds -->
-      <audio id="bgd-music" src="./sounds/relaxing-ambient-music-jonny-easton.mp3"></audio>
-      <audio id="swallow-sound" src="./sounds/orb-swallow.wav"></audio>
-
-      <!-- orb images -->
-      <img src="./images/my-orb.png" id="my-orb">
-      <img src="./images/smaller-orb.png" id="smaller-orb">
-      <img src="./images/bigger-orb.png" id="larger-orb">
+      <audio id="bgd-music" src="./src/sounds/relaxing-ambient-music-jonny-easton.mp3"></audio>
+      <audio id="swallow-sound" src="./src/sounds/orb-swallow.wav"></audio>
     </main>
 
-    <script src="./js/orbs.js"></script>
-    <script src="./js/helpers.js"></script>
-    <script src="./js/game.js"></script>
-    <script src="./js/script.js"></script>
+    <script src="./src/js/orbs.js"></script>
+    <script src="./src/js/helpers.js"></script>
+    <script src="./src/js/game.js"></script>
+    <script src="./src/js/script.js"></script>
   </body>
 </html>
