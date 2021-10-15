@@ -13,6 +13,7 @@ class Orb {
     this.radius = radius;
     this.img = inactiveImg;
     this.glow = "#F9F2A6"
+    this.glowSize = 10;
     this.isTarget = false;
     this.type = "inactive";
   }
@@ -20,7 +21,7 @@ class Orb {
   // draw orb on the canvas
   draw() {
     ctx.shadowColor = this.glow;
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = this.glowSize;
     ctx.drawImage(this.img, this.pos.x - this.radius, this.pos.y - this.radius, this.radius*2, this.radius*2);
   }
 }
@@ -30,9 +31,10 @@ class Orb {
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
-    this.speed = 0.7;
+    this.speed = 1.5;
     this.img = activeImg;
-    this.glow = "blue";
+    this.glow = "#B22222";
+    this.glowSize = 15;
     this.type = "active"
     this.target = null;
     this.visionArea = this.radius * 3;

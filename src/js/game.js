@@ -74,7 +74,6 @@ function draw() {
     if (orb.type === "player") {
       playerOrb.chase();
 
-      // loop inside a loop -> not optimal: use hash table instead
       // check if player orb swallows another orb
       for (let orb of orbs) {
         if (orb.type === "player") {
@@ -130,6 +129,14 @@ function draw() {
 
     // update active orbs positions
     if (orb.type === "active") {
+      // update orb's glow color depending on its size
+      if (orb.radius > playerOrb.radius) {
+        orb.glow = "#B22222";
+      } else {
+        orb.glow = "#6D22C7";
+      }
+
+      // make orb chase its target
       orb.chase();
 
       if (orb.target.type === "player") {
