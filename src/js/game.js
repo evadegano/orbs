@@ -1,24 +1,17 @@
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 
-let animationId;
-let isGameOver = false;
-
 // initialize mouse coordinates
 var mouse = {
   pos: {
     x: 0,
     y: 0
   }
-  
 }
-
-// initialize the array containing all the orbs
-let orbs = [];
-
-// add player orb to the game
-let playerOrb = new PlayerOrb(mouse);
-orbs.push(playerOrb);
+let animationId; // var to stock animation frames
+let isGameOver; // bool used to stop the game
+let orbs; // array containing all the orbs
+let playerOrb; // player
 
 
 // Search if there is an overlap between a given position and orbs on the canvas
@@ -129,7 +122,7 @@ function draw() {
           }
 
           // update scoreboard with new stats
-          updateScoreBoard();
+          updateStats(scoreBoardStats);
         }
       }
 
@@ -156,7 +149,7 @@ function draw() {
       if (orb.swallow(orb.target)) {
         // if the orb swallowed player orb, the game is over
         if (orb.target.type === "player") {
-          gameOver();
+          stopGame();
         } else {
           // generate a new random position and make sure there is no overlap
           do {
@@ -201,18 +194,12 @@ function animate() {
 
 
 // stop game
-function gameOver() {
-  // get for how long the game ran
-  let stopClock = Date.now() - startClock;
-
-  // if new time record was reached, update local storage
-  if (stopClock > localStorage.getItem('longestTime')) {
-    localStorage.setItem('longestTime', stopClock);
-  }
-
+function stopGame() {
   // stop animations
   cancelAnimationFrame(animationId);
   isGameOver = true;
+
+  gameOver();
 }
 
 

@@ -30,7 +30,7 @@ class Orb {
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
-    this.speed = 1.0;
+    this.speed = 0.7;
     this.img = activeImg;
     this.glow = "blue";
     this.type = "active"
@@ -153,13 +153,13 @@ class PlayerOrb extends ActiveOrb {
       y: null
     }
 
-    if (playerOrb.pos.x < canvas.width / 2 && playerOrb.pos.y < canvas.height / 2) {
+    if (this.pos.x < canvas.width / 2 && this.pos.y < canvas.height / 2) {
       dist.x = this.target.pos.x - this.pos.x;
       dist.y = this.target.pos.y - this.pos.y;
-    } else if (playerOrb.pos.x < canvas.width / 2) {
+    } else if (this.pos.x < canvas.width / 2) {
       dist.x = this.target.pos.x - this.pos.x;
       dist.y = this.target.pos.y - canvas.height / 2;
-    } else if (playerOrb.pos.y < canvas.height / 2) {
+    } else if (this.pos.y < canvas.height / 2) {
       dist.x = this.target.pos.x - canvas.width / 2;
       dist.y = this.target.pos.y - this.pos.y;
     } else {

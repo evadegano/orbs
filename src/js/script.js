@@ -1,14 +1,18 @@
 // site's elements
 const startButton = document.querySelector("#start-btn");
-const scoreBoard = document.querySelectorAll("#score-board p");
+const restartButton = document.querySelector("#restart-btn");
+const scoreBoard = document.querySelector("#score-board");
+const scoreBoardStats = document.querySelectorAll("#score-board p span");
 const introPage = document.querySelector("#intro-page");
 const gamePage = document.querySelector("#game-page");
+const modalBox = document.querySelector("#modal-box");
+const modalBoxStats = document.querySelectorAll("#modal-wrapper div h3 span");
 const bgdMusic = document.querySelector("#bgd-music");
 const swallowSound = document.querySelector("#swallow-sound");
 const backgroundImg = document.querySelector("#bgd-img");
 
 let slideIndex = 0;
-let startClock;
+let startClock, stopClock;
 
 
 // display slides
@@ -29,41 +33,107 @@ function showSlides() {
 
 // create a local storage to cache player infos
 function createStorage() {
-  // if there is no local storage, create a new one
-  if (localStorage.length === 0) {
-    localStorage.setItem('largestSize', playerOrb.radius);
-    localStorage.setItem('longestTime', 0);
-    localStorage.setItem('maxOrbsSwallowed', 0);
-    localStorage.setItem('totalGames', 0);
-  }
+  localStorage.setItem('largestSize', playerOrb.radius);
+  localStorage.setItem('longestTime', 0);
+  localStorage.setItem('maxOrbsSwallowed', 0);
+  localStorage.setItem('totalGames', 0);
 }
 
 
 // update scoreboard with new stats
-function updateScoreBoard() {
-  scoreBoard[0].querySelector("span").textContent = Math.floor(playerOrb.radius);
-  scoreBoard[1].querySelector("span").textContent = playerOrb.orbsSwallowed;
-  scoreBoard[2].querySelector("span").textContent = Math.floor(localStorage.getItem("largestSize"));
-  scoreBoard[3].querySelector("span").textContent = localStorage.getItem("maxOrbsSwallowed");
+function updateStats(element) {
+  if (element = scoreBoardStats) {
+    element[0].textContent = Math.floor(playerOrb.radius);
+    element[1].textContent = playerOrb.orbsSwallowed;
+    element[2].textContent = Math.floor(localStorage.getItem("largestSize"));
+    element[3].textContent = localStorage.getItem("maxOrbsSwallowed");
+  } else {
+    element[0].textContent = Math.floor(playerOrb.radius);
+    element[1].textContent = playerOrb.orbsSwallowed;
+    element[2].textContent = `${stopClock / 1000}s`;
+    element[3].textContent = Math.floor(localStorage.getItem("largestSize"));
+    element[4].textContent = localStorage.getItem("maxOrbsSwallowed");
+    element[4].textContent = localStorage.getItem("longestTime");
+  }
+  
 }
 
 
-// 
+// set image sizes and sound effects volume
 function setAttributes() {
   // set canvas size
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  // set background image size depending on canvas size
-  if (canvas.width > canvas.height) {
-    backgroundImg.width = canvas.width;
+  // set background image size depending on screen size ratio
+  let imgSizeRatio = backgroundImg.naturalWidth / backgroundImg.naturalHeight;
+  let viewportSizeRatio = window.innerWidth / window.innerHeight;
+  
+  if (viewportSizeRatio >= imgSizeRatio) {
+    backgroundImg.width = window.innerWidth;
   } else {
-    backgroundImg.height = canvas.height;
+    backgroundImg.height = window.innerHeight;
   }
   
   // set sound effects volume
   bgdMusic.volume = 0.2;
-  swallowSound.volume = 0.15;
+  swallowSound.volume = 0.1;
+}
+
+
+// initialize new game
+function initGame() {
+  // reset game parameters
+  isGameOver = false;
+  orbs = [];
+
+  // add player orb to the game
+  playerOrb = new PlayerOrb(mouse);
+  orbs.push(playerOrb);
+
+  // start game clock
+  startClock = Date.now();
+
+  // play background music
+  bgdMusic.play();
+
+  // update scoreboard with player's info
+  updateStats(scoreBoardStats);
+
+  // add a random amount of inactive and active orbs to the game
+  let randAmount = random(15, 20);
+  generateOrbs(randAmount, 20, 30, Orb);
+  randAmount = random(3, 5);
+  generateOrbs(randAmount, playerOrb.radius, playerOrb.radius + 10, ActiveOrb);
+
+  // make active orbs look for a target
+  for (let i = orbs.length - 1; i >= 0; i--) {
+    if (orbs[i].type === "active") {
+      orbs[i].hunt(orbs);
+    }
+  }
+  
+  // animate game
+  animate();
+}
+
+
+// display player's stats when game is over
+function gameOver() {
+  // get for how long the game ran
+  stopClock = Date.now() - startClock;
+
+  // if new time record was reached, update local storage
+  if (stopClock > localStorage.getItem('longestTime')) {
+    localStorage.setItem('longestTime', stopClock);
+  }
+
+  // update stats in the modal box
+  updateStats(modalBoxStats);
+
+  // display modal box
+  scoreBoard.style.display = "none";
+  modalBox.style.display = "block";
 }
 
 
@@ -82,31 +152,20 @@ startButton.addEventListener("click", (event) => {
   introPage.style.display = "none";
   gamePage.style.display = "block";
 
-  // start game clock
-  startClock = Date.now();
-
-  // play background music
-  bgdMusic.play();
-
-  // create a local storage to stock player's info
-  createStorage();
-
-  // update scoreboard with player's info
-  updateScoreBoard()
-
-  // add a random amount of inactive and active orbs to the game
-  let randAmount = random(15, 20);
-  generateOrbs(randAmount, 20, 30, Orb);
-  randAmount = random(3, 5);
-  generateOrbs(randAmount, playerOrb.radius, playerOrb.radius + 10, ActiveOrb);
-
-  // make active orbs look for a target
-  for (let i = orbs.length - 1; i >= 0; i--) {
-    if (orbs[i].type === "active") {
-      orbs[i].hunt(orbs)
-    }
+  // if there is no local storage, create a new one
+  if (localStorage.length === 0) {
+    createStorage();
   }
-  
-  // launch game
-  animate();
+
+  initGame();
+})
+
+
+// launch new game when restart button is clicked
+restartButton.addEventListener("click", event => {
+  // hide modal box and display score board
+  modalBox.style.display = "none";
+  scoreBoard.style.display = "block";
+
+  initGame();
 })

@@ -54,11 +54,44 @@
           <p>best survival time: <span>0</span></p>
         </div>
 
-        <!-- particules background -->
+        <!-- background image -->
         <img id="bgd-img" src="./src/images/background.jpg" alt="picture of a nebula">
 
         <!-- game area -->
         <canvas id="game-canvas"></canvas>
+      </div>
+
+      <!-- game over modal box -->
+      <div id="modal-box">
+        <div id="modal-content">
+          <h2>game over</h2>
+          <div id="modal-wrapper">
+            <div>
+              <h3>size reached
+                <br><span>0</span>
+              </h3>
+              <h3>orbs swallowed
+                <br><span>0</span>
+              </h3>
+              <h3>time alive
+                <br><span>0</span>
+              </h3>
+            </div>
+            <div>
+              <h3>largest size
+                <br><span>0</span>
+              </h3>
+              <h3>most orbs swallowed
+                <br><span>0</span>
+              </h3>
+              <h3>longest time
+                <br><span>0</span>
+              </h3>
+            </div>
+          </div>
+          <h3>better luck next time?</h3>
+          <button id="restart-btn">try again</button>
+        </div>
       </div>
       
       <!-- game sounds -->
