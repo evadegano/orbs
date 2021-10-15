@@ -15,6 +15,12 @@ let slideIndex = 0;
 let startClock, stopClock;
 
 
+// generate a random float in a given interval
+function random(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+
 // display slides
 function showSlides() {
   const slides = document.querySelectorAll(".slide");
@@ -33,10 +39,10 @@ function showSlides() {
 
 // create a local storage to cache player infos
 function createStorage() {
-  localStorage.setItem('largestSize', playerOrb.radius);
-  localStorage.setItem('longestTime', 0);
-  localStorage.setItem('maxOrbsSwallowed', 0);
-  localStorage.setItem('totalGames', 0);
+  localStorage.setItem("largestSize", playerOrb.radius);
+  localStorage.setItem("longestTime", 0);
+  localStorage.setItem("maxOrbsSwallowed", 0);
+  localStorage.setItem("totalGames", 0);
 }
 
 
@@ -68,7 +74,7 @@ function setAttributes() {
   // set background image size depending on screen size ratio
   let imgSizeRatio = backgroundImg.naturalWidth / backgroundImg.naturalHeight;
   let viewportSizeRatio = window.innerWidth / window.innerHeight;
-  
+
   if (viewportSizeRatio >= imgSizeRatio) {
     backgroundImg.width = window.innerWidth;
   } else {
@@ -124,8 +130,8 @@ function gameOver() {
   stopClock = Date.now() - startClock;
 
   // if new time record was reached, update local storage
-  if (stopClock > localStorage.getItem('longestTime')) {
-    localStorage.setItem('longestTime', stopClock);
+  if (stopClock > localStorage.getItem("longestTime")) {
+    localStorage.setItem("longestTime", stopClock);
   }
 
   // update stats in the modal box
@@ -144,7 +150,7 @@ window.addEventListener("load", event => {
 
 
 // launch game when start button is clicked
-startButton.addEventListener("click", (event) => {
+startButton.addEventListener("click", event => {
   // set gameplay attributes
   setAttributes();
 

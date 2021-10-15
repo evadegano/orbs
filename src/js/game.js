@@ -211,15 +211,24 @@ function stopGame() {
 
 
 // update mouse coordinates on every move
-window.addEventListener("mousemove", (event) => {
+window.addEventListener("mousemove", event => {
   mouse.pos.x = event.pageX,
   mouse.pos.y = event.pageY
 })
 
 
 // resize canvas and background image with viewport
-window.addEventListener('resize', (reportWindowSize) => {
+window.addEventListener("resize", event => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  backgroundImg.width = canvas.width;
+  
+  // resize background image depending on screen size ratio
+  let imgSizeRatio = backgroundImg.naturalWidth / backgroundImg.naturalHeight;
+  let viewportSizeRatio = window.innerWidth / window.innerHeight;
+
+  if (viewportSizeRatio >= imgSizeRatio) {
+    backgroundImg.width = window.innerWidth;
+  } else {
+    backgroundImg.height = window.innerHeight;
+  }
 });

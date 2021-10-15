@@ -31,7 +31,8 @@ class Orb {
 class ActiveOrb extends Orb {
   constructor(x, y, radius) {
     super(x, y, radius);
-    this.speed = 1.5;
+    // set a speed that decreases as radius increases | maxSpeed = 1.5 and minSpeed = 0.7
+    this.speed = 0.8 * Math.exp(-(this.radius - 30) / 13.90) + 0.7;
     this.img = activeImg;
     this.glow = "#B22222";
     this.glowSize = 15;
@@ -140,6 +141,7 @@ class PlayerOrb extends ActiveOrb {
   constructor(mouse) {
     super(canvas.width / 2, canvas.height / 2);
     this.radius = 30;
+    this.speed = 0.8 * Math.exp(-(this.radius - 30) / 13.90) + 0.7;
     this.img = playerImg;
     this.glow = "#001E17";
     this.orbsSwallowed = 0;
@@ -193,8 +195,8 @@ class PlayerOrb extends ActiveOrb {
       this.orbsSwallowed++;
 
       // if new record of orbs eaten, update max orbs eaten in local storage
-      if (localStorage.getItem('maxOrbsSwallowed') < this.orbsSwallowed) {
-        localStorage.setItem('maxOrbsSwallowed', this.orbsSwallowed);
+      if (localStorage.getItem("maxOrbsSwallowed") < this.orbsSwallowed) {
+        localStorage.setItem("maxOrbsSwallowed", this.orbsSwallowed);
       }
       
       // increase player orb with the area of orb that was swallowed
@@ -205,10 +207,9 @@ class PlayerOrb extends ActiveOrb {
       // update radius with the radius of the new area
       this.radius = Math.sqrt(thisArea / Math.PI);
 
-
       // if new record size, update largest size in local storage
-      if (localStorage.getItem('largestSize') < this.radius) {
-        localStorage.setItem('largestSize', this.radius);
+      if (localStorage.getItem("largestSize") < this.radius) {
+        localStorage.setItem("largestSize", this.radius);
       }
 
       return true;
@@ -217,11 +218,3 @@ class PlayerOrb extends ActiveOrb {
     return false;
   }
 }
-
-/*
-
-attraction
-perception radius that grow with their size
-size grows logarithmicly
-
-*/
