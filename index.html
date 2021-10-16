@@ -65,6 +65,17 @@
 
         <!-- game area -->
         <canvas id="game-canvas"></canvas>
+
+        <!-- gooey filter-->
+        <svg>
+          <defs>
+            <filter id="gooey">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+              <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="gooey" />
+              <feBlend in="SourceGraphic" in2="gooey" operator="atop" />
+            </filter>
+          </defs>
+      </svg>
       </div>
 
       <!-- game over modal box -->
@@ -103,6 +114,8 @@
       <!-- game sounds -->
       <audio id="bgd-music" src="./src/sounds/relaxing-ambient-music-jonny-easton.mp3"></audio>
       <audio id="swallow-sound" src="./src/sounds/orb-swallow.wav"></audio>
+      <audio id="button-click" src="./src/sounds/button-click.wav"></audio>
+      <audio id="gameover-sound" src="./src/sounds/game-over.wav"></audio>
     </main>
 
     <script src="./src/js/orbs.js"></script>

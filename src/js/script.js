@@ -7,9 +7,12 @@ const introPage = document.querySelector("#intro-page");
 const gamePage = document.querySelector("#game-page");
 const modalBox = document.querySelector("#modal-box");
 const modalBoxStats = document.querySelectorAll("#modal-wrapper div h3 span");
+const backgroundImg = document.querySelector("#bgd-img");
 const bgdMusic = document.querySelector("#bgd-music");
 const swallowSound = document.querySelector("#swallow-sound");
-const backgroundImg = document.querySelector("#bgd-img");
+const buttonClick = document.querySelector("#button-click");
+const gameoverSound = document.querySelector("#gameover-sound");
+
 
 let slideIndex = 0;
 let startClock, stopClock;
@@ -49,13 +52,11 @@ function createStorage() {
 // update scoreboard with new stats
 function updateStats(element) {
   if (element === scoreBoardStats) {
-    console.log("if")
     element[0].textContent = Math.floor(playerOrb.radius);
     element[1].textContent = playerOrb.orbsSwallowed;
     element[2].textContent = Math.floor(localStorage.getItem("largestSize"));
     element[3].textContent = localStorage.getItem("maxOrbsSwallowed");
   } else {
-    console.log("else")
     element[0].textContent = Math.floor(playerOrb.radius);
     element[1].textContent = playerOrb.orbsSwallowed;
     element[2].textContent = `${stopClock / 1000}s`;
@@ -85,7 +86,9 @@ function setAttributes() {
   
   // set sound effects volume
   bgdMusic.volume = 0.2;
-  swallowSound.volume = 0.1;
+  swallowSound.volume = 0.05;
+  buttonClick.volume = 0.1;
+  gameoverSound.volume = 0.2;
 }
 
 
@@ -102,7 +105,8 @@ function initGame() {
   // start game clock
   startClock = Date.now();
 
-  // play background music
+  // restart and play background music
+  bgdMusic.src = "./src/sounds/relaxing-ambient-music-jonny-easton.mp3";
   bgdMusic.play();
 
   // update scoreboard with player's info
@@ -133,12 +137,15 @@ function gameOver() {
 
   // if new time record was reached, update local storage
   if (stopClock > localStorage.getItem("longestTime")) {
-    console.log("record")
     localStorage.setItem("longestTime", stopClock);
   }
 
   // update stats in the modal box
   updateStats(modalBoxStats);
+
+  // stop background music
+  bgdMusic.pause();
+  gameoverSound.play();
 
   // display modal box
   scoreBoard.style.display = "none";
@@ -154,6 +161,9 @@ window.addEventListener("load", event => {
 
 // launch game when start button is clicked
 startButton.addEventListener("click", event => {
+  // play sound effect
+  buttonClick.play()
+
   // set gameplay attributes
   setAttributes();
 
@@ -172,6 +182,9 @@ startButton.addEventListener("click", event => {
 
 // launch new game when restart button is clicked
 restartButton.addEventListener("click", event => {
+  // play sound effect
+  buttonClick.play();
+
   // hide modal box and display score board
   modalBox.style.display = "none";
   scoreBoard.style.display = "flex";

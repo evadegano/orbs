@@ -73,7 +73,7 @@ function draw() {
   for (let orb of orbs) {
     // update player orb's position
     if (orb.type === "player") {
-      playerOrb.chase();
+      playerOrb.chase(); 
 
       // check if player orb swallows another orb
       for (let orb of orbs) {

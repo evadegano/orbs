@@ -146,10 +146,11 @@ h3 {
   z-index: -1;
 }
 
-canvas {
+#game-canvas {
   position: absolute;
   top: 0;
   left: 0;
+  filter: url("#gooey");
 }
 
 

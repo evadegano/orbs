@@ -13,7 +13,7 @@ class Orb {
     this.radius = radius;
     this.img = inactiveImg;
     this.glow = "#F9F2A6"
-    this.glowSize = 10;
+    this.glowSize = 15;
     this.isTarget = false;
     this.type = "inactive";
   }
