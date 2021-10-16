@@ -88,7 +88,7 @@ function draw() {
           if (orb.type === "inactive") {
             // generate a new inactive orb
             do {
-              var randRad = random(15, 20);
+              var randRad = random(playerOrb.radius - 20, playerOrb.radius - 10);
               var randX = random(randRad, canvas.width - randRad);
               var randY = random(randRad, canvas.height - randRad);
             } while (doesOverlap(randX, randY, randRad));
@@ -103,7 +103,7 @@ function draw() {
           } else {
             // generate a new active orb
             do {
-              var randRad = random(playerOrb.radius - 5, playerOrb.radius + 10);
+              var randRad = random(playerOrb.radius - 5, playerOrb.radius + 5);
               var randX = random(randRad, canvas.width - randRad);
               var randY = random(randRad, canvas.height - randRad);
             } while (doesOverlap(randX, randY, randRad));
@@ -161,7 +161,7 @@ function draw() {
         } else {
           // generate a new random position and make sure there is no overlap
           do {
-            var randRad = random(15, 20);
+            var randRad = random(playerOrb.radius - 20, playerOrb.radius - 10);
             var randX = random(randRad, canvas.width - randRad);
             var randY = random(randRad, canvas.height - randRad);
           } while (doesOverlap(randX, randY, randRad));
