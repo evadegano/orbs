@@ -39,7 +39,7 @@ function showSlides() {
 
 // create a local storage to cache player infos
 function createStorage() {
-  localStorage.setItem("largestSize", playerOrb.radius);
+  localStorage.setItem("largestSize", 30);
   localStorage.setItem("longestTime", 0);
   localStorage.setItem("maxOrbsSwallowed", 0);
   localStorage.setItem("totalGames", 0);
@@ -48,18 +48,20 @@ function createStorage() {
 
 // update scoreboard with new stats
 function updateStats(element) {
-  if (element = scoreBoardStats) {
+  if (element === scoreBoardStats) {
+    console.log("if")
     element[0].textContent = Math.floor(playerOrb.radius);
     element[1].textContent = playerOrb.orbsSwallowed;
     element[2].textContent = Math.floor(localStorage.getItem("largestSize"));
     element[3].textContent = localStorage.getItem("maxOrbsSwallowed");
   } else {
+    console.log("else")
     element[0].textContent = Math.floor(playerOrb.radius);
     element[1].textContent = playerOrb.orbsSwallowed;
     element[2].textContent = `${stopClock / 1000}s`;
     element[3].textContent = Math.floor(localStorage.getItem("largestSize"));
     element[4].textContent = localStorage.getItem("maxOrbsSwallowed");
-    element[4].textContent = localStorage.getItem("longestTime");
+    element[5].textContent = `${localStorage.getItem("longestTime") / 1000}s`;
   }
   
 }
@@ -131,6 +133,7 @@ function gameOver() {
 
   // if new time record was reached, update local storage
   if (stopClock > localStorage.getItem("longestTime")) {
+    console.log("record")
     localStorage.setItem("longestTime", stopClock);
   }
 
@@ -171,7 +174,7 @@ startButton.addEventListener("click", event => {
 restartButton.addEventListener("click", event => {
   // hide modal box and display score board
   modalBox.style.display = "none";
-  scoreBoard.style.display = "block";
+  scoreBoard.style.display = "flex";
 
   initGame();
 })

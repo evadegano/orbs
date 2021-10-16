@@ -56,7 +56,8 @@ function draw() {
   // reset canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.save() // sauvegarde la position de mon "curseur"
+  // save cursor position
+  ctx.save()
 
   // make the camera follow the player
   if (playerOrb.pos.x < canvas.width / 2 && playerOrb.pos.y < canvas.height / 2) {
@@ -186,7 +187,8 @@ function draw() {
     orb.draw();
   }
 
-  ctx.restore(); // sauvegarde la position de mon "curseur"
+  // save cursor position
+  ctx.restore();
 }
 
 

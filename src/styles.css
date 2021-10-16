@@ -55,7 +55,6 @@ h3 {
   border-radius: 25px;
   border: 1px solid white;
   cursor: pointer;
-  box-sizing: border-box;
   transition: 0.5s;
 }
 
@@ -119,10 +118,25 @@ h3 {
 
 #score-board {
   position: fixed;
+  display: flex;
   top: 0;
   left: 0;
   padding: 10px 20px;
   z-index: 1;
+}
+
+#score-board > div {
+  margin-right: 60px;
+}
+
+#score-board h2 {
+  font-size: 18px;
+  text-shadow: 0 0 10px var(--dark);
+}
+
+#score-board p {
+  font-size: 16px;
+  text-shadow: 0 0 10px var(--dark);
 }
 
 #bgd-img {
