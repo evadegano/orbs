@@ -8,7 +8,7 @@ var mouse = {
     y: 0
   }
 }
-let animationId; // var to stock animation frames
+let animationId; // var used to stock animation frames
 let isGameOver; // bool used to stop the game
 let orbs; // array containing all the orbs
 let playerOrb; // player
