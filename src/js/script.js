@@ -116,7 +116,7 @@ function initGame() {
   let randAmount = random(15, 20);
   generateOrbs(randAmount, 20, 30, Orb);
   randAmount = random(3, 5);
-  generateOrbs(randAmount, playerOrb.radius - 5, playerOrb.radius + 10, ActiveOrb);
+  generateOrbs(randAmount, playerOrb.radius - 10, playerOrb.radius + 5, ActiveOrb);
 
   // make active orbs look for a target
   for (let i = orbs.length - 1; i >= 0; i--) {
