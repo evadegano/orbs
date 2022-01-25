@@ -1,10 +1,31 @@
 # Orbs
-## Introduction
-Orbs is a game that I did as a first project in week 6 of Ironhack.
+## Table of contents
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Concepts](#concepts)
+* [Demo](#demo)
+* [Sources](#sources)
 
-It is based on the game [Agar.io](https://www.agar.io/), but you play against the computer instead of playing against other players.
+## General Info
+Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonous agents rather than actual player.
 
-This project allowed me to explore some cool concepts such as svg filters, simulating camera movements on Canvas, collision detection, following the mouse at different velocities, and [autonomous agents](https://www.youtube.com/watch?v=P_xJMH8VvAE&ab_channel=TheCodingTrain). 
+I built this game as a first project during my full stack developer bootcamp.
 
-## Check it out
-Click [here](https://evanina.github.io/project-orbs/) to play Orbs.
+## Technologies
+This project is built with:
+* Javascript
+* HTML, CSS
+* Canvas
+
+## Concepts
+* Autonomous agents
+* Simulation of camera movements on Canvas
+* Collision detection
+* Following the mouse at different velocities
+
+## Demo
+Coming soon...
+
+## Sources
+This project was inspired by The Nature of Code on Youtube.
+Available at: https://www.youtube.com/watch?v=70MQ-FugwbI&list=PLRqwX-V7Uu6ZV4yEcW3uDwOgGXKUUsPOM
