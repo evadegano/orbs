@@ -1,6 +1,6 @@
-# project-orbs
+# Orbs
 ## Introduction
-Orbs is a game that I did as a first solo project in week 6 of Ironhack!
+Orbs is a game that I did as a first project in week 6 of Ironhack.
 
 It is based on the game [Agar.io](https://www.agar.io/), but you play against the computer instead of playing against other players.
 
