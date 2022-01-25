@@ -24,8 +24,9 @@ This project is built with:
 * Following the mouse at different velocities
 
 ## Demo
-Coming soon...
+Demo available at: https://evadegano.github.io/orbs/
 
 ## Sources
 This project was inspired by The Nature of Code on Youtube.
+
 Available at: https://www.youtube.com/watch?v=70MQ-FugwbI&list=PLRqwX-V7Uu6ZV4yEcW3uDwOgGXKUUsPOM
