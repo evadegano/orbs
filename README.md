@@ -9,7 +9,7 @@ Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonous
 * [Sources](#sources)
 
 ## Scope
-I built this game as a first project during my full stack developer bootcamp.
+This project was built as a first project during Ironhack's Full Stack Developer bootcamp.
 
 ## Technologies
 This project is built with:
