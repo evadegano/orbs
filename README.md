@@ -1,5 +1,5 @@
 # Orbs
-Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonous agents rather than actual player.
+Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonomous agents rather than actual player.
 
 The game is available at: https://evadegano.github.io/orbs/
 
