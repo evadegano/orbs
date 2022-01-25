@@ -1,14 +1,14 @@
 # Orbs
+Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonous agents rather than actual player.
+
 ## Table of contents
-* [General info](#general-info)
+* [Scope](#scope)
 * [Technologies](#technologies)
 * [Concepts](#concepts)
 * [Demo](#demo)
 * [Sources](#sources)
 
-## General Info
-Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonous agents rather than actual player.
-
+## Scope
 I built this game as a first project during my full stack developer bootcamp.
 
 ## Technologies
