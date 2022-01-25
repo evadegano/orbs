@@ -1,11 +1,12 @@
 # Orbs
 Orbs is an [Agar.io-like](https://www.agar.io/) game where ennemies are autonous agents rather than actual player.
 
+The game is available at: https://evadegano.github.io/orbs/
+
 ## Table of contents
 * [Scope](#scope)
 * [Technologies](#technologies)
 * [Concepts](#concepts)
-* [Demo](#demo)
 * [Sources](#sources)
 
 ## Scope
@@ -22,9 +23,6 @@ This project is built with:
 * Simulation of camera movements on Canvas
 * Collision detection
 * Following the mouse at different velocities
-
-## Demo
-Demo available at: https://evadegano.github.io/orbs/
 
 ## Sources
 This project was inspired by The Nature of Code on Youtube.
