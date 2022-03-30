@@ -5,24 +5,27 @@ The game is available at: https://evadegano.github.io/orbs/
 
 ## Table of contents
 * [Scope](#scope)
+* [Features](#features)
 * [Technologies](#technologies)
-* [Concepts](#concepts)
 * [Sources](#sources)
 
 ## Scope
 This project was built as a first project during Ironhack's Full Stack Developer bootcamp.
+
+
+## Features
+<img src='https://user-images.githubusercontent.com/35829634/160790147-63492dee-880b-4a1b-af43-cf12939932d9.gif' alt='' height='300' />
+
+* Autonomous agents
+* Simulation of camera movements on Canvas
+* Collision detection
+* Following the mouse at different velocities
 
 ## Technologies
 This project is built with:
 * Javascript
 * HTML, CSS
 * Canvas
-
-## Concepts
-* Autonomous agents
-* Simulation of camera movements on Canvas
-* Collision detection
-* Following the mouse at different velocities
 
 ## Sources
 This project was inspired by The Nature of Code on Youtube.
